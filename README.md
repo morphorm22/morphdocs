@@ -1,0 +1,2 @@
+# platodocs
+Documentation for Plato
