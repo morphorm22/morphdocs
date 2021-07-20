@@ -1,2 +1,2 @@
 # platodocs
-Documentation for Plato
+Documentation for Plato tools.
