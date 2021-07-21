@@ -2,5 +2,9 @@
 
 # Plato Docs
 
-Documentation for Plato tools (**Coming Soon!**).
+Documentation source for Plato tools (**Coming Soon!**).
 https://platoengine.github.io/platodocs/
+
+.. note::
+
+   This is project is under active development.
