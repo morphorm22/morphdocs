@@ -7,6 +7,7 @@ Documentation source for Plato tools (**Coming Soon!**).
 Website pages can be accessed here:
 https://platoengine.github.io/platodocs/
 
-PDF version of documentation can be accessed at /platodocs/platodocs.pdf
+PDF version of documentation can be accessed here:
+https://github.com/platoengine/platodocs/blob/release/platodocs.pdf
 
 NOTE: This is project is under active development.
