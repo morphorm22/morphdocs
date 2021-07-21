@@ -3,3 +3,4 @@
 # Plato Docs
 
 Documentation for Plato tools (**Coming Soon!**).
+https://platoengine.github.io/platodocs/
