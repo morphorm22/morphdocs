@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Documentation Process &#8212; Plato 0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Plato Repositories" href="githubrepositories.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="githubrepositories.html" title="Plato Repositories"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Documentation Process</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="documentation-process">
+<h1>Documentation Process<a class="headerlink" href="#documentation-process" title="Permalink to this headline">¶</a></h1>
+<p>This section describes the process for cloning, editing, and commiting to these GitHub pages, i.e., these web pages.</p>
+<section id="cloning-plato-docs">
+<h2>Cloning Plato Docs<a class="headerlink" href="#cloning-plato-docs" title="Permalink to this headline">¶</a></h2>
+<p>Firstly, navigate to a directory where the user can clone Plato Docs.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/platoengine/platodocs.git</span>
+
+<span class="go">mkdir platodocs-build</span>
+
+<span class="go">cd platodocs-build</span>
+
+<span class="go">git clone https://github.com/platoengine/platodocs.git html</span>
+
+<span class="go">cd html</span>
+
+<span class="go">git checkout -b gh-pages remotes/origin/gh-pages</span>
+</pre></div>
+</div>
+<p>The directory structure should look like this:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>topfolder\
+|-- platodocs\
+|   |-- docs\
+|   |   |-- source\
+|   |   |-- make.bat
+|   |   |-- Makefile
+|   |-- platodocs.pdf
+|   `-- README.md
+|
+`-- platodocs-build\
+    |-- doctrees\
+    `-- html\
+        |-- _images\
+        |-- _source\
+        |-- _images\
+        |-- index.html
+        |-- .nojekyll
+        `-- other files
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Documentation Process</a><ul>
+<li><a class="reference internal" href="#cloning-plato-docs">Cloning Plato Docs</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="githubrepositories.html"
+                        title="previous chapter">Plato Repositories</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/documentation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="githubrepositories.html" title="Plato Repositories"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Documentation Process</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Plato Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.1.
+    </div>
+  </body>
+</html>

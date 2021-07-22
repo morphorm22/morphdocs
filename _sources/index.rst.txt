@@ -28,6 +28,7 @@ Contents
 
    description
    githubrepositories
+   documentation
 
 Indices and tables
 ==================
