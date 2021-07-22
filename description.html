@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Description &#8212; Plato 0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to Plato’s documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Plato’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Description</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="description">
+<h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>PLATO Engine</strong> computer program serves as a collaborative testbed rich in light-weight synthesis tools for optimization-based design. PLATO Engine is a research code designed to facilitate collaboration with academia, labs and industries by providing interfaces for plug-n-play insertion of synthesis technologies in the areas of modeling, analysis and optimization. Currently, PLATO Engine offers a set of light-weight tools for finite element analysis, linear- and nonlinear-programming, and non-gradient based optimization. The PLATO Engine program is designed to run on high-performance computers.</p>
+<section id="application">
+<h2>Application<a class="headerlink" href="#application" title="Permalink to this headline">¶</a></h2>
+<p>The PLATO Engine testbed is designed to support research in the area of optimization-based design on high-performance computing systems. The PLATO Engine testbed is used to explore interoperability with several analysis, modeling and optimization tools. The testbed is also used to test the viability of these analysis, modeling and optimization tools for the solution of optimization-based design problems.</p>
+</section>
+<section id="approach">
+<h2>Approach<a class="headerlink" href="#approach" title="Permalink to this headline">¶</a></h2>
+<p>PLATO Engine is intended to serve as a collaborative testbed. It is designed to enable intercommunication of modeling, analysis and optimization data using a Multiple Program, Multiple Data (MPMD) parallel programming model. The MPMD model allows multiple, independent programs/executables to share data in-memory. The optimization algorithms orchestrate the execution and communication between multiple analysis codes and aggregates their contributions to create designs that meet multiple performance criteria.</p>
+</section>
+<section id="high-performance-computing">
+<h2>High Performance Computing<a class="headerlink" href="#high-performance-computing" title="Permalink to this headline">¶</a></h2>
+<p>PLATO Engine has been designed for MPMD parallel executions. It also targets Single Program, Multiple Data (SPMD) parallel programming model; however, the SPMD model is not heavily used by the targeted PLATO applications. PLATO Engine is also performance-protable, which allow it to optimally perform in current and next-generation computing architectures.</p>
+</section>
+<section id="required-libraries">
+<h2>Required Libraries<a class="headerlink" href="#required-libraries" title="Permalink to this headline">¶</a></h2>
+<p>Trilinos library (provides Epetra, Seacas and STK): <a class="reference external" href="https://github.com/trilinos/trilinos">https://github.com/trilinos/trilinos</a></p>
+<p>Omega_h library (provides mesh metadata): <a class="reference external" href="https://github.com/SNLComputation/omega_h">https://github.com/SNLComputation/omega_h</a></p>
+<p>Netcdf library (provides I/O libraries): <a class="reference external" href="https://www.unidata.ucar.edu/software/netcdf/">https://www.unidata.ucar.edu/software/netcdf/</a></p>
+<p>AMGX library (provides GPU linear solver): <a class="reference external" href="https://github.com/NVIDIA/AMGX">https://github.com/NVIDIA/AMGX</a></p>
+<p>Lapack library (provides linear algebra libraries): <a class="reference external" href="http://www.netlib.org/lapack/">http://www.netlib.org/lapack/</a></p>
+<p>Boost library (provides C++ source libraries): <a class="reference external" href="https://www.boost.org/">https://www.boost.org/</a></p>
+</section>
+<section id="hardware-requirements">
+<h2>Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Permalink to this headline">¶</a></h2>
+<p>Tested compilers are <code class="code docutils literal notranslate"><span class="pre">g++</span> <span class="pre">4.7.2</span></code>, <code class="code docutils literal notranslate"><span class="pre">g++</span> <span class="pre">5.4.0</span></code>, and <code class="code docutils literal notranslate"><span class="pre">g++</span> <span class="pre">7.2.0</span></code> compilers. Tested OS include Linux and Mac. RAM requirements are problem size dependent.</p>
+<p><strong>TODO:</strong> is the following still true?</p>
+<p><strong>Note: Currently, PLATO Analyze only runs on Graphics Processing Units (GPUs).</strong></p>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<p>Please open a GitHub issue to ask a question, report a bug, request features, etc. If you’d like to contribute, please fork the repository and use a feature branch. Make sure to follow the team’s <a class="reference external" href="https://github.com/platoengine/platoengine/wiki/Coding-Style/">coding style policies</a>. Pull requests are welcomed.</p>
+<p><strong>TODO:</strong> create coding style policies page</p>
+</section>
+<section id="user-support">
+<h2>User Support<a class="headerlink" href="#user-support" title="Permalink to this headline">¶</a></h2>
+<p>Users are welcomed to submit questions via email to <a class="reference external" href="mailto:plato3D-help&#37;&#52;&#48;sandia&#46;gov">plato3D-help<span>&#64;</span>sandia<span>&#46;</span>gov</a>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Description</a><ul>
+<li><a class="reference internal" href="#application">Application</a></li>
+<li><a class="reference internal" href="#approach">Approach</a></li>
+<li><a class="reference internal" href="#high-performance-computing">High Performance Computing</a></li>
+<li><a class="reference internal" href="#required-libraries">Required Libraries</a></li>
+<li><a class="reference internal" href="#hardware-requirements">Hardware Requirements</a></li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#user-support">User Support</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Plato’s documentation!</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/description.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Plato’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Description</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Plato Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.1.
+    </div>
+  </body>
+</html>
