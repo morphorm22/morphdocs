@@ -15,33 +15,7 @@ Welcome to Plato's documentation!
 
    These pages are a pre-release version. They are under active development.
 
-These Github pages are meant to serve as the documentation for **Plato Engine** and its associated repositories. These repositories can be found at the `Plato Engine <https://github.com/platoengine/>`_ GitHub account. The following table gives a brief description of the different repositories that compose Plato Engine.
-
-   +----------------------------------------------------+-----------------------+
-   | Repository                                         | Description           |
-   +====================================================+=======================+
-   | `AMGX <https://github.com/platoengine/AMGX/>`_     | role                  |
-   +----------------------------------------------------+-----------------------+
-   | exo2obj                                            | role                  |
-   +----------------------------------------------------+-----------------------+
-   | nvcc_wrapper                                       | role                  |
-   +----------------------------------------------------+-----------------------+
-   | Plato3D                                            | role                  |
-   +----------------------------------------------------+-----------------------+
-   | Plato3D_backend                                    | role                  |
-   +----------------------------------------------------+-----------------------+
-   | platoanalyze                                       | role                  |
-   +----------------------------------------------------+-----------------------+
-   | platoengine                                        | role                  |
-   +----------------------------------------------------+-----------------------+
-   | spack                                              | role                  |
-   +----------------------------------------------------+-----------------------+
-   | tests                                              | role                  |
-   +----------------------------------------------------+-----------------------+
-   | use_cases                                          | role                  |
-   +----------------------------------------------------+-----------------------+
-   | verification                                       | role                  |
-   +----------------------------------------------------+-----------------------+
+These Github pages are meant to serve as the documentation for **Plato Engine** and its associated repositories. These repositories can be found at the `Plato Engine <https://github.com/platoengine/>`_ GitHub account.
 
 These pages are built using the `Plato Docs <https://github.com/platoengine/platodocs/>`_ GitHub repository.
 
@@ -53,6 +27,7 @@ Contents
    :maxdepth: 2
 
    description
+   githubrepositories
 
 Indices and tables
 ==================
