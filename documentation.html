@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Documentation Process &#8212; Plato 0.0 documentation</title>
+    <title>Documentation For Plato &#8212; Plato 0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -17,7 +17,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Plato Repositories" href="githubrepositories.html" /> 
+    <link rel="prev" title="Necessary Packages for Ubuntu" href="packages.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -26,10 +26,10 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="githubrepositories.html" title="Plato Repositories"
+          <a href="packages.html" title="Necessary Packages for Ubuntu"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Documentation Process</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Documentation For Plato</a></li> 
       </ul>
     </div>  
 
@@ -38,12 +38,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="documentation-process">
-<h1>Documentation Process<a class="headerlink" href="#documentation-process" title="Permalink to this headline">¶</a></h1>
-<p>This section describes the process for cloning, editing, and commiting to these GitHub pages, i.e., these web pages.</p>
+  <section id="documentation-for-plato">
+<h1>Documentation For Plato<a class="headerlink" href="#documentation-for-plato" title="Permalink to this headline">¶</a></h1>
+<p>This section describes the process for cloning, editing, and commiting to these GitHub pages, i.e., these web pages. These pages are created using reStructuredText in <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a>.</p>
 <section id="cloning-plato-docs">
 <h2>Cloning Plato Docs<a class="headerlink" href="#cloning-plato-docs" title="Permalink to this headline">¶</a></h2>
-<p>Firstly, navigate to a directory where the user can clone Plato Docs.</p>
+<p>The user should navigate to a directory where <code class="code docutils literal notranslate"><span class="pre">/platodocs/</span></code> and <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/</span></code> can be stored.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/platoengine/platodocs.git</span>
 
 <span class="go">mkdir platodocs-build</span>
@@ -57,27 +57,90 @@
 <span class="go">git checkout -b gh-pages remotes/origin/gh-pages</span>
 </pre></div>
 </div>
-<p>The directory structure should look like this:</p>
+<p>The directory structure should look something like this:</p>
 <div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>topfolder\
-|-- platodocs\
+|-- platodocs\              &lt;-- release branch
 |   |-- docs\
 |   |   |-- source\
+|   |   |   |-- images\
+|   |   |   |-- _static\
+|   |   |   |-- _templates\
+|   |   |   |-- conf.py     &lt;-- configuration information to sphinx (extensions, etc.)
+|   |   |   |-- index.rst   &lt;-- index source file
+|   |   |   `-- other files
 |   |   |-- make.bat
-|   |   |-- Makefile
+|   |   `-- Makefile
 |   |-- platodocs.pdf
 |   `-- README.md
 |
 `-- platodocs-build\
     |-- doctrees\
-    `-- html\
+    `-- html\           &lt;-- gh-pages branch
         |-- _images\
         |-- _source\
         |-- _images\
-        |-- index.html
-        |-- .nojekyll
+        |-- index.html  &lt;-- main html file (can open with browser)
+        |-- .nojekyll   &lt;-- tells github to not use a jekyll theme
+        |-- README.md
         `-- other files
 </pre></div>
 </div>
+<p>The existing webpages can be viewed by opening <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/html/index.html</span></code> in a web browser or they can be viewed in the pdf version from <code class="code docutils literal notranslate"><span class="pre">/platodocs/platodocs.pdf</span></code>.</p>
+</section>
+<section id="editing-plato-docs">
+<h2>Editing Plato Docs<a class="headerlink" href="#editing-plato-docs" title="Permalink to this headline">¶</a></h2>
+<p><strong>Editing Existing Pages:</strong></p>
+<p>Documentation can be edited from the source folder (<code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/source/</span></code>). The files in this directory are written using reStructuredText (.rst). These files can be opened in any text editor and edited using syntax found <a class="reference external" href="https://docutils.sourceforge.io/rst.html">here</a>.</p>
+<p><strong>Adding New Pages:</strong></p>
+<p>When adding a new page to the html web pages, the user can create another .rst file in the source directory (<code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/source/</span></code>). This file is added to the website by adding the file name to the contents in <code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/source/index.rst</span></code> or another file if the user does not want the file to show up on the home page.</p>
+<p>For example, this page is built based on the <code class="code docutils literal notranslate"><span class="pre">documentation.rst</span></code> and was added to the web pages by using “toctree” directive in <code class="code docutils literal notranslate"><span class="pre">index.rst</span></code>. An example of this is shown below.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/source/index.rst</span></code></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">.. toctree::</span>
+<span class="go">:maxdepth: 2</span>
+
+<span class="go">   description</span>
+<span class="go">   githubrepositories</span>
+<span class="go">   documentation        &lt;-- adding documentation.rst</span>
+</pre></div>
+</div>
+<p><strong>Updating HTML and PDF in Ubuntu:</strong></p>
+<p>The web pages (<code class="code docutils literal notranslate"><span class="pre">.html</span></code> files) can be updated to represent the changes in the <code class="code docutils literal notranslate"><span class="pre">.rst</span></code> files.</p>
+<p>First, the user should navigate to <code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/</span></code>. Then they can run the following command in a virtual environment (.venv) from the terminal. For directions to get into a virtual environment, go to ( <strong>TODO:</strong> add reference to virtual environment).</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">make html</span>
+</pre></div>
+</div>
+<p>Changes can be viewed by opening <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/html/index.html</span></code> in a web browser.</p>
+<p>The user can update the pdf version of the documentation by running the following command at from <code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/</span></code> from the terminal.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">make latexpdf</span>
+</pre></div>
+</div>
+<p>The changes can be viewed by opening <code class="code docutils literal notranslate"><span class="pre">/platodocs/platodocs.pdf</span></code>.</p>
+</section>
+<section id="publishing-documentation">
+<h2>Publishing Documentation<a class="headerlink" href="#publishing-documentation" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="pushing-and-pulling">
+<h2>Pushing and Pulling<a class="headerlink" href="#pushing-and-pulling" title="Permalink to this headline">¶</a></h2>
+<p>The process for pushing to and pulling from the <code class="code docutils literal notranslate"><span class="pre">release</span></code> branch of Plato Docs (<code class="code docutils literal notranslate"><span class="pre">/platodocs/</span></code>) is standard. This is the branch used for the source files of Plato Docs.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git push</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git pull</span>
+</pre></div>
+</div>
+<p>The user will have to specify the branch when pushing to or pulling from the <code class="code docutils literal notranslate"><span class="pre">gh-pages</span></code> branch of Plato Docs (<code class="code docutils literal notranslate"><span class="pre">/platodocs-build/</span></code>). This is the branch used for the build files of Plato Docs.</p>
+<p>Navigate to be within the <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/html/</span></code> directory.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git push origin gh-pages</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git pull origin gh-pages</span>
+</pre></div>
+</div>
+</section>
+<section id="packages-for-editing-documentation">
+<h2>Packages for Editing Documentation<a class="headerlink" href="#packages-for-editing-documentation" title="Permalink to this headline">¶</a></h2>
 </section>
 </section>
 
@@ -90,15 +153,19 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Documentation Process</a><ul>
+<li><a class="reference internal" href="#">Documentation For Plato</a><ul>
 <li><a class="reference internal" href="#cloning-plato-docs">Cloning Plato Docs</a></li>
+<li><a class="reference internal" href="#editing-plato-docs">Editing Plato Docs</a></li>
+<li><a class="reference internal" href="#publishing-documentation">Publishing Documentation</a></li>
+<li><a class="reference internal" href="#pushing-and-pulling">Pushing and Pulling</a></li>
+<li><a class="reference internal" href="#packages-for-editing-documentation">Packages for Editing Documentation</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="githubrepositories.html"
-                        title="previous chapter">Plato Repositories</a></p>
+  <p class="topless"><a href="packages.html"
+                        title="previous chapter">Necessary Packages for Ubuntu</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -127,10 +194,10 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="githubrepositories.html" title="Plato Repositories"
+          <a href="packages.html" title="Necessary Packages for Ubuntu"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Documentation Process</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Documentation For Plato</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
