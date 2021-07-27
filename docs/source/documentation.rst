@@ -22,7 +22,7 @@ Sphinx packages are published on the Python Package Index. The preferred tool fo
 
 .. code-block:: console
 
-   $ sudo apt install python3-venv python3-pip
+   $ sudo apt-get -y install python3-venv python3-pip
 
 **Installing virtualenv**
 
@@ -38,7 +38,7 @@ The user will have to install certain latex packages to enable building a pdf ve
 
 .. code-block:: console
 
-   $ sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
+   $ sudo apt-get -y install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
 
 **Installing Sphinx**
 
@@ -46,15 +46,26 @@ Finally, the user will have to install Sphinx from a virtual environment in orde
 
 .. code-block:: console
 
-   $ python -m venv ~/.venv
+   $ python3 -m venv ~/.venv
    $ source ~/.venv/bin/activate
-   (.venv) $ python -m pip install sphinx
-
-Check that the Spinx version is equivalent or beyond :code:`sphinx-build 4.0.0`
+   
+Check that the version of Python used in the virtual environment is 3.0.0 or later.
 
 .. code-block:: console
 
-   (.venv) $ sphinx-build --version
+   (.venv) $ python --version
+
+Install Sphinx:
+
+.. code-block:: console
+
+   (.venv) $ python -m pip install sphinx
+
+Check that the Spinx version is 4.0.0 or later.
+
+.. code-block:: console
+
+   (.venv) $ sphinx-build --version    
 
 Cloning Plato Docs
 ------------------
