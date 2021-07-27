@@ -2,6 +2,60 @@ Documentation For Plato
 =======================
 This section describes the process for cloning, editing, and commiting to these GitHub pages, i.e., these web pages. These pages are created using reStructuredText in `Sphinx <https://www.sphinx-doc.org/>`_.
 
+Installing Sphinx and Other Packages
+------------------------------------
+The sphinx documentation is set up to work with Python3 packages. The user will need to install pip, virtualenv, and Sphinx.
+
+**Installing Some Packages**
+
+The following code block installs some necessary packages that are probably already installed if the user has installed Plato.
+
+.. code-block:: console
+
+   $ sudo apt-get update
+   $ sudo apt-get -y upgrade
+   $ sudo apt-get -y install build-essential curl git gfortran python python-dev vim tcl environment-modules unzip csh python3-distutils
+
+**Installing pip**
+
+Sphinx packages are published on the Python Package Index. The preferred tool for installing packages from *PyPI* is **pip**. Ubuntu users have to manually install **pip** for Python3.
+
+.. code-block:: console
+
+   $ sudo apt install python3-venv python3-pip
+
+**Installing virtualenv**
+
+To install the virtual environment to manage Python packages:
+
+.. code-block:: console
+
+   $ python3 -m pip install --user virtualenv
+
+**Installing Latex Packages**
+
+The user will have to install certain latex packages to enable building a pdf version of Plato Docs.
+
+.. code-block:: console
+
+   $ sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
+
+**Installing Sphinx**
+
+Finally, the user will have to install Sphinx from a virtual environment in order to get the most recent version:
+
+.. code-block:: console
+
+   $ python -m venv ~/.venv
+   $ source ~/.venv/bin/activate
+   (.venv) $ python -m pip install sphinx
+
+Check that the Spinx version is equivalent or beyond :code:`sphinx-build 4.0.0`
+
+.. code-block:: console
+
+   (.venv) $ sphinx-build --version
+
 Cloning Plato Docs
 ------------------
 Navigate to a directory where :code:`/platodocs/` and :code:`/platodocs-build/` can be stored.
@@ -79,7 +133,7 @@ For example, this page is built based on the :code:`documentation.rst` and was a
 
 The web pages (:code:`.html` files) can be updated to represent the changes in the :code:`.rst` files.
 
-First, the user should navigate to :code:`/platodocs/docs/`. Then they can run the following command in a virtual environment (.venv) from the terminal. For directions to get into a virtual environment, go to ( **TODO:** add reference to virtual environment).
+First, the user should navigate to :code:`/platodocs/docs/`. Then they can run the following command in a virtual environment (.venv) from the terminal. For directions to get into a virtual environment, go to :ref:`Virtual Environment <virtualenvironment>`.
 
 .. code-block:: console
 
@@ -131,59 +185,7 @@ or
 
    $ git pull origin gh-pages
 
-Installing Sphinx and Other Packages
-------------------------------------
-The sphinx documentation is set up to work with Python3 packages. The user will need to install pip, virtualenv, and Sphinx.
-
-**Installing Some Packages**
-
-The following code block installs some necessary packages that are probably already installed if the user has installed Plato.
-
-.. code-block:: console
-
-   $ sudo apt-get update
-   $ sudo apt-get -y upgrade
-   $ sudo apt-get -y install build-essential curl git gfortran python python-dev vim tcl environment-modules unzip csh python3-distutils
-
-**Installing pip**
-
-Sphinx packages are published on the Python Package Index. The preferred tool for installing packages from *PyPI* is **pip**. Ubuntu users have to manually install **pip** for Python3.
-
-.. code-block:: console
-
-   $ sudo apt install python3-venv python3-pip
-
-**Installing virtualenv**
-
-To install the virtual environment to manage Python packages:
-
-.. code-block:: console
-
-   $ python3 -m pip install --user virtualenv
-
-**Installing Latex Packages**
-
-The user will have to install certain latex packages to enable building a pdf version of Plato Docs.
-
-.. code-block:: console
-
-   $ sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
-
-**Installing Sphinx**
-
-Finally, the user will have to install Sphinx from a virtual environment in order to get the most recent version:
-
-.. code-block:: console
-
-   $ python -m venv ~/.venv
-   $ source ~/.venv/bin/activate
-   (.venv) $ python -m pip install sphinx
-
-Check that the Spinx version is equivalent or beyond :code:`sphinx-build 4.0.0`
-
-.. code-block:: console
-
-   (.venv) $ sphinx-build --version
+.. _virtualenvironment:
 
 Virtual Environment
 -------------------
@@ -205,8 +207,8 @@ Check that default Python version is 3.0.0 or later and Sphinx is 4.0.0 or later
 
 .. code-block:: console
 
-   (.venv) $ python --version
-   (.venv) $ sphinx-build --version
+   (.venv) $ python --version       <-- should be 3.0.0 or later
+   (.venv) $ sphinx-build --version <-- should be 4.0.0 or later
 
 
 
