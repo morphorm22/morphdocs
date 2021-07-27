@@ -53,7 +53,7 @@
 </div>
 <p><strong>Installing pip</strong></p>
 <p>Sphinx packages are published on the Python Package Index. The preferred tool for installing packages from <em>PyPI</em> is <strong>pip</strong>. Ubuntu users have to manually install <strong>pip</strong> for Python3.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install python3-venv python3-pip
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get -y install python3-venv python3-pip
 </pre></div>
 </div>
 <p><strong>Installing virtualenv</strong></p>
@@ -63,17 +63,24 @@
 </div>
 <p><strong>Installing Latex Packages</strong></p>
 <p>The user will have to install certain latex packages to enable building a pdf version of Plato Docs.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get -y install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
 </pre></div>
 </div>
 <p><strong>Installing Sphinx</strong></p>
 <p>Finally, the user will have to install Sphinx from a virtual environment in order to get the most recent version:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python -m venv ~/.venv
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python3 -m venv ~/.venv
 <span class="gp">$ </span><span class="nb">source</span> ~/.venv/bin/activate
-<span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>python -m pip install sphinx
 </pre></div>
 </div>
-<p>Check that the Spinx version is equivalent or beyond <code class="code docutils literal notranslate"><span class="pre">sphinx-build</span> <span class="pre">4.0.0</span></code></p>
+<p>Check that the version of Python used in the virtual environment is 3.0.0 or later.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>python --version
+</pre></div>
+</div>
+<p>Install Sphinx:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>python -m pip install sphinx
+</pre></div>
+</div>
+<p>Check that the Spinx version is 4.0.0 or later.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>sphinx-build --version
 </pre></div>
 </div>
