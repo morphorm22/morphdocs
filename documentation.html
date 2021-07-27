@@ -17,7 +17,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Necessary Packages for Ubuntu" href="packages.html" /> 
+    <link rel="prev" title="Plato Repositories" href="githubrepositories.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -26,7 +26,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="packages.html" title="Necessary Packages for Ubuntu"
+          <a href="githubrepositories.html" title="Plato Repositories"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Documentation For Plato</a></li> 
@@ -43,18 +43,18 @@
 <p>This section describes the process for cloning, editing, and commiting to these GitHub pages, i.e., these web pages. These pages are created using reStructuredText in <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a>.</p>
 <section id="cloning-plato-docs">
 <h2>Cloning Plato Docs<a class="headerlink" href="#cloning-plato-docs" title="Permalink to this headline">¶</a></h2>
-<p>The user should navigate to a directory where <code class="code docutils literal notranslate"><span class="pre">/platodocs/</span></code> and <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/</span></code> can be stored.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/platoengine/platodocs.git</span>
+<p>Navigate to a directory where <code class="code docutils literal notranslate"><span class="pre">/platodocs/</span></code> and <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/</span></code> can be stored.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/platoengine/platodocs.git
 
-<span class="go">mkdir platodocs-build</span>
+<span class="gp">$ </span>mkdir platodocs-build
 
-<span class="go">cd platodocs-build</span>
+<span class="gp">$ </span><span class="nb">cd</span> platodocs-build
 
-<span class="go">git clone https://github.com/platoengine/platodocs.git html</span>
+<span class="gp">$ </span>git clone https://github.com/platoengine/platodocs.git html
 
-<span class="go">cd html</span>
+<span class="gp">$ </span><span class="nb">cd</span> html
 
-<span class="go">git checkout -b gh-pages remotes/origin/gh-pages</span>
+<span class="gp">$ </span>git checkout -b gh-pages remotes/origin/gh-pages
 </pre></div>
 </div>
 <p>The directory structure should look something like this:</p>
@@ -106,41 +106,94 @@
 <p><strong>Updating HTML and PDF in Ubuntu:</strong></p>
 <p>The web pages (<code class="code docutils literal notranslate"><span class="pre">.html</span></code> files) can be updated to represent the changes in the <code class="code docutils literal notranslate"><span class="pre">.rst</span></code> files.</p>
 <p>First, the user should navigate to <code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/</span></code>. Then they can run the following command in a virtual environment (.venv) from the terminal. For directions to get into a virtual environment, go to ( <strong>TODO:</strong> add reference to virtual environment).</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">make html</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>make html
 </pre></div>
 </div>
 <p>Changes can be viewed by opening <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/html/index.html</span></code> in a web browser.</p>
 <p>The user can update the pdf version of the documentation by running the following command at from <code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/</span></code> from the terminal.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="go">make latexpdf</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>make latexpdf
 </pre></div>
 </div>
 <p>The changes can be viewed by opening <code class="code docutils literal notranslate"><span class="pre">/platodocs/platodocs.pdf</span></code>.</p>
 </section>
 <section id="publishing-documentation">
 <h2>Publishing Documentation<a class="headerlink" href="#publishing-documentation" title="Permalink to this headline">¶</a></h2>
+<p>In order to publish changes to the Plato Docs <a class="reference external" href="https://platoengine.github.io/platodocs/">GitHub Pages</a> the user will have to Git Push changes to the build repository (<code class="code docutils literal notranslate"><span class="pre">gh-pages</span></code> branch).  It is also wise to Git Push the changes in the source files (<code class="code docutils literal notranslate"><span class="pre">release</span></code> branch).  See instruction on <a class="reference internal" href="#pushingpulling"><span class="std std-ref">pushing and pulling</span></a> to both branches of Plato Docs.</p>
 </section>
 <section id="pushing-and-pulling">
-<h2>Pushing and Pulling<a class="headerlink" href="#pushing-and-pulling" title="Permalink to this headline">¶</a></h2>
-<p>The process for pushing to and pulling from the <code class="code docutils literal notranslate"><span class="pre">release</span></code> branch of Plato Docs (<code class="code docutils literal notranslate"><span class="pre">/platodocs/</span></code>) is standard. This is the branch used for the source files of Plato Docs.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git push</span>
+<span id="pushingpulling"></span><h2>Pushing and Pulling<a class="headerlink" href="#pushing-and-pulling" title="Permalink to this headline">¶</a></h2>
+<p>The process for pushing to and pulling from the <code class="code docutils literal notranslate"><span class="pre">release</span></code> branch of Plato Docs (<code class="code docutils literal notranslate"><span class="pre">/platodocs/</span></code>) is standard. This is the branch used for the source files of <a class="reference external" href="https://github.com/platoengine/platodocs/">Plato Docs</a>.</p>
+<p>In <code class="code docutils literal notranslate"><span class="pre">/platodocs/</span></code> :</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git push
 </pre></div>
 </div>
 <p>or</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git pull</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git pull
 </pre></div>
 </div>
 <p>The user will have to specify the branch when pushing to or pulling from the <code class="code docutils literal notranslate"><span class="pre">gh-pages</span></code> branch of Plato Docs (<code class="code docutils literal notranslate"><span class="pre">/platodocs-build/</span></code>). This is the branch used for the build files of Plato Docs.</p>
-<p>Navigate to be within the <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/html/</span></code> directory.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git push origin gh-pages</span>
+<p>In <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/</span></code> :</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git push origin gh-pages
 </pre></div>
 </div>
 <p>or</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git pull origin gh-pages</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git pull origin gh-pages
 </pre></div>
 </div>
 </section>
-<section id="packages-for-editing-documentation">
-<h2>Packages for Editing Documentation<a class="headerlink" href="#packages-for-editing-documentation" title="Permalink to this headline">¶</a></h2>
+<section id="installing-sphinx-and-other-packages">
+<h2>Installing Sphinx and Other Packages<a class="headerlink" href="#installing-sphinx-and-other-packages" title="Permalink to this headline">¶</a></h2>
+<p>The sphinx documentation is set up to work with Python3 packages. The user will need to install pip, virtualenv, and Sphinx.</p>
+<p><strong>Installing Some Packages</strong></p>
+<p>The following code block installs some necessary packages that are probably already installed if the user has installed Plato.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get update
+<span class="gp">$ </span>sudo apt-get -y upgrade
+<span class="gp">$ </span>sudo apt-get -y install build-essential curl git gfortran python python-dev vim tcl environment-modules unzip csh python3-distutils
+</pre></div>
+</div>
+<p><strong>Installing pip</strong></p>
+<p>Sphinx packages are published on the Python Package Index. The preferred tool for installing packages from <em>PyPI</em> is <strong>pip</strong>. Ubuntu users have to manually install <strong>pip</strong> for Python3.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install python3-venv python3-pip
+</pre></div>
+</div>
+<p><strong>Installing virtualenv</strong></p>
+<p>To install the virtual environment to manage Python packages:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python3 -m pip install --user virtualenv
+</pre></div>
+</div>
+<p><strong>Installing Latex Packages</strong></p>
+<p>The user will have to install certain latex packages to enable building a pdf version of Plato Docs.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
+</pre></div>
+</div>
+<p><strong>Installing Sphinx</strong></p>
+<p>Finally, the user will have to install Sphinx from a virtual environment in order to get the most recent version:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python -m venv ~/.venv
+<span class="gp">$ </span><span class="nb">source</span> ~/.venv/bin/activate
+<span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>python -m pip install sphinx
+</pre></div>
+</div>
+<p>Check that the Spinx version is equivalent or beyond <code class="code docutils literal notranslate"><span class="pre">sphinx-build</span> <span class="pre">4.0.0</span></code></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>sphinx-build --version
+</pre></div>
+</div>
+</section>
+<section id="virtual-environment">
+<h2>Virtual Environment<a class="headerlink" href="#virtual-environment" title="Permalink to this headline">¶</a></h2>
+<p>Sphinx build commands (<code class="code docutils literal notranslate"><span class="pre">$</span> <span class="pre">make</span> <span class="pre">html</span></code> or <code class="code docutils literal notranslate"><span class="pre">$</span> <span class="pre">make</span> <span class="pre">latexpdf</span></code>) will have to done from a Python3 virtual environment. To create a virtual environment:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python3 -m venv ~/.venv
+</pre></div>
+</div>
+<p>Note that the virtual environment only has to be created once.</p>
+<p>Once the virtual environment is created it can be sourced:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span> ~/.venv/bin/activate
+</pre></div>
+</div>
+<p>Check that default Python version is 3.0.0 or later and Sphinx is 4.0.0 or later:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python --version
+<span class="gp">$ </span>sphinx-build --version
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -158,14 +211,15 @@
 <li><a class="reference internal" href="#editing-plato-docs">Editing Plato Docs</a></li>
 <li><a class="reference internal" href="#publishing-documentation">Publishing Documentation</a></li>
 <li><a class="reference internal" href="#pushing-and-pulling">Pushing and Pulling</a></li>
-<li><a class="reference internal" href="#packages-for-editing-documentation">Packages for Editing Documentation</a></li>
+<li><a class="reference internal" href="#installing-sphinx-and-other-packages">Installing Sphinx and Other Packages</a></li>
+<li><a class="reference internal" href="#virtual-environment">Virtual Environment</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="packages.html"
-                        title="previous chapter">Necessary Packages for Ubuntu</a></p>
+  <p class="topless"><a href="githubrepositories.html"
+                        title="previous chapter">Plato Repositories</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -194,7 +248,7 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="packages.html" title="Necessary Packages for Ubuntu"
+          <a href="githubrepositories.html" title="Plato Repositories"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Documentation For Plato</a></li> 
@@ -202,7 +256,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, Plato Team.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
     </div>
   </body>
 </html>

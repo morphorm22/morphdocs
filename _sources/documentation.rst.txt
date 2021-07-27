@@ -4,21 +4,21 @@ This section describes the process for cloning, editing, and commiting to these 
 
 Cloning Plato Docs
 ------------------
-The user should navigate to a directory where :code:`/platodocs/` and :code:`/platodocs-build/` can be stored.
+Navigate to a directory where :code:`/platodocs/` and :code:`/platodocs-build/` can be stored.
 
 .. code-block:: console
 
-   git clone https://github.com/platoengine/platodocs.git
+   $ git clone https://github.com/platoengine/platodocs.git
 
-   mkdir platodocs-build
+   $ mkdir platodocs-build
 
-   cd platodocs-build
+   $ cd platodocs-build
 
-   git clone https://github.com/platoengine/platodocs.git html
+   $ git clone https://github.com/platoengine/platodocs.git html
 
-   cd html
+   $ cd html
 
-   git checkout -b gh-pages remotes/origin/gh-pages
+   $ git checkout -b gh-pages remotes/origin/gh-pages
 
 The directory structure should look something like this:
 
@@ -83,7 +83,7 @@ First, the user should navigate to :code:`/platodocs/docs/`. Then they can run t
 
 .. code-block:: console
 
-   (.venv) make html
+   (.venv) $ make html
 
 Changes can be viewed by opening :code:`/platodocs-build/html/index.html` in a web browser. 
 
@@ -91,42 +91,123 @@ The user can update the pdf version of the documentation by running the followin
 
 .. code-block:: console
 
-   (.venv) make latexpdf
+   (.venv) $ make latexpdf
 
 The changes can be viewed by opening :code:`/platodocs/platodocs.pdf`.
 
 Publishing Documentation
 ------------------------
+In order to publish changes to the Plato Docs `GitHub Pages <https://platoengine.github.io/platodocs/>`_ the user will have to Git Push changes to the build repository (:code:`gh-pages` branch).  It is also wise to Git Push the changes in the source files (:code:`release` branch).  See instruction on :ref:`pushing and pulling <pushingpulling>` to both branches of Plato Docs.
 
+.. _pushingpulling:
 
 Pushing and Pulling
 -------------------
-The process for pushing to and pulling from the :code:`release` branch of Plato Docs (:code:`/platodocs/`) is standard. This is the branch used for the source files of Plato Docs.
+The process for pushing to and pulling from the :code:`release` branch of Plato Docs (:code:`/platodocs/`) is standard. This is the branch used for the source files of `Plato Docs <https://github.com/platoengine/platodocs/>`_.
+
+In :code:`/platodocs/` :
 
 .. code-block:: console
 
-   git push
+   $ git push
 
 or
 
 .. code-block:: console
 
-   git pull
+   $ git pull
 
 The user will have to specify the branch when pushing to or pulling from the :code:`gh-pages` branch of Plato Docs (:code:`/platodocs-build/`). This is the branch used for the build files of Plato Docs.
 
-Navigate to be within the :code:`/platodocs-build/html/` directory.
+In :code:`/platodocs-build/` :
 
 .. code-block:: console
 
-   git push origin gh-pages
+   $ git push origin gh-pages
 
 or 
 
 .. code-block:: console
 
-   git pull origin gh-pages
+   $ git pull origin gh-pages
 
-Packages for Editing Documentation
-----------------------------------
+Installing Sphinx and Other Packages
+------------------------------------
+The sphinx documentation is set up to work with Python3 packages. The user will need to install pip, virtualenv, and Sphinx.
+
+**Installing Some Packages**
+
+The following code block installs some necessary packages that are probably already installed if the user has installed Plato.
+
+.. code-block:: console
+
+   $ sudo apt-get update
+   $ sudo apt-get -y upgrade
+   $ sudo apt-get -y install build-essential curl git gfortran python python-dev vim tcl environment-modules unzip csh python3-distutils
+
+**Installing pip**
+
+Sphinx packages are published on the Python Package Index. The preferred tool for installing packages from *PyPI* is **pip**. Ubuntu users have to manually install **pip** for Python3.
+
+.. code-block:: console
+
+   $ sudo apt install python3-venv python3-pip
+
+**Installing virtualenv**
+
+To install the virtual environment to manage Python packages:
+
+.. code-block:: console
+
+   $ python3 -m pip install --user virtualenv
+
+**Installing Latex Packages**
+
+The user will have to install certain latex packages to enable building a pdf version of Plato Docs.
+
+.. code-block:: console
+
+   $ sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
+
+**Installing Sphinx**
+
+Finally, the user will have to install Sphinx from a virtual environment in order to get the most recent version:
+
+.. code-block:: console
+
+   $ python -m venv ~/.venv
+   $ source ~/.venv/bin/activate
+   (.venv) $ python -m pip install sphinx
+
+Check that the Spinx version is equivalent or beyond :code:`sphinx-build 4.0.0`
+
+.. code-block:: console
+
+   (.venv) $ sphinx-build --version
+
+Virtual Environment
+-------------------
+Sphinx build commands (:code:`$ make html` or :code:`$ make latexpdf`) will have to done from a Python3 virtual environment. To create a virtual environment:
+
+.. code-block:: console
+
+   $ python3 -m venv ~/.venv
+
+Note that the virtual environment only has to be created once.
+
+Once the virtual environment is created it can be sourced:
+
+.. code-block:: console
+
+   $ source ~/.venv/bin/activate
+
+Check that default Python version is 3.0.0 or later and Sphinx is 4.0.0 or later:
+
+.. code-block:: console
+
+   $ python --version
+   $ sphinx-build --version
+
+
+
 
