@@ -41,6 +41,43 @@
   <section id="documentation-for-plato">
 <h1>Documentation For Plato<a class="headerlink" href="#documentation-for-plato" title="Permalink to this headline">¶</a></h1>
 <p>This section describes the process for cloning, editing, and commiting to these GitHub pages, i.e., these web pages. These pages are created using reStructuredText in <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a>.</p>
+<section id="installing-sphinx-and-other-packages">
+<h2>Installing Sphinx and Other Packages<a class="headerlink" href="#installing-sphinx-and-other-packages" title="Permalink to this headline">¶</a></h2>
+<p>The sphinx documentation is set up to work with Python3 packages. The user will need to install pip, virtualenv, and Sphinx.</p>
+<p><strong>Installing Some Packages</strong></p>
+<p>The following code block installs some necessary packages that are probably already installed if the user has installed Plato.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get update
+<span class="gp">$ </span>sudo apt-get -y upgrade
+<span class="gp">$ </span>sudo apt-get -y install build-essential curl git gfortran python python-dev vim tcl environment-modules unzip csh python3-distutils
+</pre></div>
+</div>
+<p><strong>Installing pip</strong></p>
+<p>Sphinx packages are published on the Python Package Index. The preferred tool for installing packages from <em>PyPI</em> is <strong>pip</strong>. Ubuntu users have to manually install <strong>pip</strong> for Python3.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install python3-venv python3-pip
+</pre></div>
+</div>
+<p><strong>Installing virtualenv</strong></p>
+<p>To install the virtual environment to manage Python packages:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python3 -m pip install --user virtualenv
+</pre></div>
+</div>
+<p><strong>Installing Latex Packages</strong></p>
+<p>The user will have to install certain latex packages to enable building a pdf version of Plato Docs.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
+</pre></div>
+</div>
+<p><strong>Installing Sphinx</strong></p>
+<p>Finally, the user will have to install Sphinx from a virtual environment in order to get the most recent version:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python -m venv ~/.venv
+<span class="gp">$ </span><span class="nb">source</span> ~/.venv/bin/activate
+<span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>python -m pip install sphinx
+</pre></div>
+</div>
+<p>Check that the Spinx version is equivalent or beyond <code class="code docutils literal notranslate"><span class="pre">sphinx-build</span> <span class="pre">4.0.0</span></code></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>sphinx-build --version
+</pre></div>
+</div>
+</section>
 <section id="cloning-plato-docs">
 <h2>Cloning Plato Docs<a class="headerlink" href="#cloning-plato-docs" title="Permalink to this headline">¶</a></h2>
 <p>Navigate to a directory where <code class="code docutils literal notranslate"><span class="pre">/platodocs/</span></code> and <code class="code docutils literal notranslate"><span class="pre">/platodocs-build/</span></code> can be stored.</p>
@@ -105,7 +142,7 @@
 </div>
 <p><strong>Updating HTML and PDF in Ubuntu:</strong></p>
 <p>The web pages (<code class="code docutils literal notranslate"><span class="pre">.html</span></code> files) can be updated to represent the changes in the <code class="code docutils literal notranslate"><span class="pre">.rst</span></code> files.</p>
-<p>First, the user should navigate to <code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/</span></code>. Then they can run the following command in a virtual environment (.venv) from the terminal. For directions to get into a virtual environment, go to ( <strong>TODO:</strong> add reference to virtual environment).</p>
+<p>First, the user should navigate to <code class="code docutils literal notranslate"><span class="pre">/platodocs/docs/</span></code>. Then they can run the following command in a virtual environment (.venv) from the terminal. For directions to get into a virtual environment, go to <a class="reference internal" href="#virtualenvironment"><span class="std std-ref">Virtual Environment</span></a>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>make html
 </pre></div>
 </div>
@@ -141,45 +178,8 @@
 </pre></div>
 </div>
 </section>
-<section id="installing-sphinx-and-other-packages">
-<h2>Installing Sphinx and Other Packages<a class="headerlink" href="#installing-sphinx-and-other-packages" title="Permalink to this headline">¶</a></h2>
-<p>The sphinx documentation is set up to work with Python3 packages. The user will need to install pip, virtualenv, and Sphinx.</p>
-<p><strong>Installing Some Packages</strong></p>
-<p>The following code block installs some necessary packages that are probably already installed if the user has installed Plato.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get update
-<span class="gp">$ </span>sudo apt-get -y upgrade
-<span class="gp">$ </span>sudo apt-get -y install build-essential curl git gfortran python python-dev vim tcl environment-modules unzip csh python3-distutils
-</pre></div>
-</div>
-<p><strong>Installing pip</strong></p>
-<p>Sphinx packages are published on the Python Package Index. The preferred tool for installing packages from <em>PyPI</em> is <strong>pip</strong>. Ubuntu users have to manually install <strong>pip</strong> for Python3.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install python3-venv python3-pip
-</pre></div>
-</div>
-<p><strong>Installing virtualenv</strong></p>
-<p>To install the virtual environment to manage Python packages:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python3 -m pip install --user virtualenv
-</pre></div>
-</div>
-<p><strong>Installing Latex Packages</strong></p>
-<p>The user will have to install certain latex packages to enable building a pdf version of Plato Docs.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
-</pre></div>
-</div>
-<p><strong>Installing Sphinx</strong></p>
-<p>Finally, the user will have to install Sphinx from a virtual environment in order to get the most recent version:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python -m venv ~/.venv
-<span class="gp">$ </span><span class="nb">source</span> ~/.venv/bin/activate
-<span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>python -m pip install sphinx
-</pre></div>
-</div>
-<p>Check that the Spinx version is equivalent or beyond <code class="code docutils literal notranslate"><span class="pre">sphinx-build</span> <span class="pre">4.0.0</span></code></p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>sphinx-build --version
-</pre></div>
-</div>
-</section>
 <section id="virtual-environment">
-<h2>Virtual Environment<a class="headerlink" href="#virtual-environment" title="Permalink to this headline">¶</a></h2>
+<span id="virtualenvironment"></span><h2>Virtual Environment<a class="headerlink" href="#virtual-environment" title="Permalink to this headline">¶</a></h2>
 <p>Sphinx build commands (<code class="code docutils literal notranslate"><span class="pre">$</span> <span class="pre">make</span> <span class="pre">html</span></code> or <code class="code docutils literal notranslate"><span class="pre">$</span> <span class="pre">make</span> <span class="pre">latexpdf</span></code>) will have to done from a Python3 virtual environment. To create a virtual environment:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python3 -m venv ~/.venv
 </pre></div>
@@ -190,8 +190,8 @@
 </pre></div>
 </div>
 <p>Check that default Python version is 3.0.0 or later and Sphinx is 4.0.0 or later:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>python --version
-<span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>sphinx-build --version
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>python --version       &lt;-- should be <span class="m">3</span>.0.0 or later
+<span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>sphinx-build --version &lt;-- should be <span class="m">4</span>.0.0 or later
 </pre></div>
 </div>
 </section>
@@ -207,11 +207,11 @@
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Documentation For Plato</a><ul>
+<li><a class="reference internal" href="#installing-sphinx-and-other-packages">Installing Sphinx and Other Packages</a></li>
 <li><a class="reference internal" href="#cloning-plato-docs">Cloning Plato Docs</a></li>
 <li><a class="reference internal" href="#editing-plato-docs">Editing Plato Docs</a></li>
 <li><a class="reference internal" href="#publishing-documentation">Publishing Documentation</a></li>
 <li><a class="reference internal" href="#pushing-and-pulling">Pushing and Pulling</a></li>
-<li><a class="reference internal" href="#installing-sphinx-and-other-packages">Installing Sphinx and Other Packages</a></li>
 <li><a class="reference internal" href="#virtual-environment">Virtual Environment</a></li>
 </ul>
 </li>
