@@ -205,8 +205,8 @@ Check that default Python version is 3.0.0 or later and Sphinx is 4.0.0 or later
 
 .. code-block:: console
 
-   $ python --version
-   $ sphinx-build --version
+   (.venv) $ python --version
+   (.venv) $ sphinx-build --version
 
 
 
