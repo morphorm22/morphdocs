@@ -1,5 +1,5 @@
-Plato Repositories
-=========================
+**Plato Repositories**
+======================
 These repositories can be found at the `Plato Engine <https://github.com/platoengine/>`_ GitHub account.
 
    +----------------------------------------------------------------------+------------------------------------------------------------------------------------------------+

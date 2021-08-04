@@ -29,6 +29,8 @@ Contents
    description
    githubrepositories
    documentation
+   inputdeck
+   todo
 
 Indices and tables
 ==================
