@@ -1,5 +1,5 @@
-Documentation For Plato
-=======================
+**Documentation For Plato**
+===========================
 This section describes the process for cloning, editing, and commiting to these GitHub pages, i.e., these web pages. These pages are created using reStructuredText in `Sphinx <https://www.sphinx-doc.org/>`_.
 
 Installing Sphinx and Other Packages
@@ -184,7 +184,7 @@ or
 
 The user will have to specify the branch when pushing to or pulling from the :code:`gh-pages` branch of Plato Docs (:code:`/platodocs-build/`). This is the branch used for the build files of Plato Docs.
 
-In :code:`/platodocs-build/` :
+In :code:`/platodocs-build/html/` :
 
 .. code-block:: console
 

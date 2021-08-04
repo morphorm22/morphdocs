@@ -1,0 +1,997 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Input Deck Reference &#8212; Plato 0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Things to add" href="todo.html" />
+    <link rel="prev" title="Documentation For Plato" href="documentation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="todo.html" title="Things to add"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="documentation.html" title="Documentation For Plato"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><strong>Input Deck Reference</strong></a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="input-deck-reference">
+<h1><strong>Input Deck Reference</strong><a class="headerlink" href="#input-deck-reference" title="Permalink to this headline">¶</a></h1>
+<section id="introduction">
+<h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This document describes the Plato input deck. The Plato input deck contains the “recipe” for running a Plato optimization problem. A Plato problem is either a topology optimization problem or a shape/CAD parameter optimization problem. In these problems we are trying to optimize the toplogy or CAD parameters such that the resulting design meets some user-defined perfromance objective. These types of problems require a geometric definition of the design domain as well as instructions about what the objectives and con- straints are, what physics codes will be used to evaluate the objectives and constraints, what optimization algorithm to use, and variuos other parameters. The geoemtry is gen erally provided in the form of a finite element mesh and all of the other instructions are contained in the Plato input deck. This document will define general concepts used in the setup of a Plato optimization problem and will then define all of the possible options that can be included in the input deck.</p>
+</section>
+<section id="general-concepts">
+<h2>2. General Concepts<a class="headerlink" href="#general-concepts" title="Permalink to this headline">¶</a></h2>
+<p>Optimization problems can be very complex and require lots of different information. The Plato input deck is designed to be very general in the way it defines an optimization problem breaking it down into its fundamental pieces that can be combined in different ways to define different kinds of problems. There are 5 main building blocks upon which all optimziation problems are defined in Plato. This section will briefly introduce thesebuilding blocks and describe how they are used to define an optimization problem.</p>
+<section id="service">
+<h3><em>2.1 Service</em><a class="headerlink" href="#service" title="Permalink to this headline">¶</a></h3>
+<p>Services are the software executables that will be performing the work during the optimization problem. A typical Plato run always uses at least two different services. There will be a PlatoMain service that contains the optimizer and other utilities like filtering. In some cases this service may also be used to evaluate criterion values that will be use in a constraint (for example, volume). Then there will typically be one or more physics services which will calculate the physics-based criteria that will be used in objectives and constraints. The services are defined independently in the input deck so that they can be defined once and then referenced in a general way by other items in the input deck that need to use them.</p>
+</section>
+<section id="criterion">
+<h3><em>2.2 Criterion</em><a class="headerlink" href="#criterion" title="Permalink to this headline">¶</a></h3>
+<p>A criterion is a quantity of interest that will be calculated at each iteration as part of evaluating an objective or a constraint. For example, if my objective was to minimize the compliance of a structure (make it stiffer) the criterion would be some measure of the compliance of the structure. If my objective was to match a set of user-supplied mass properties, my criterion would be the mismatch between the current iteration’s mass properties and those provided by the user. Criteria are also used in constraints. If I have a volume constraint as part of my problem the criterion for that constraint would be the volume. In the input deck criteria are defined independently of the objectives and constraints so that they can be defined only once and then referenced repeatedly as needed by different objectives or constraints.</p>
+</section>
+<section id="scenario">
+<h3><em>2.3 Scenario</em><a class="headerlink" href="#scenario" title="Permalink to this headline">¶</a></h3>
+<p>A scenario is a description of the physics problem being solved during the calculation of an objective or constraint. It includes the type of physics as well as the loads and boundary conditions describing the physical problem. Plato supports problems with multiple objectives, multiple physics, multiple load cases, etc. Scenarios provide a general way for defining these types of problems. As with services and criteria, scenarios are defined independently in the input deck so that they can be defined once and then referenced by other items in mulitple ways if needed.</p>
+</section>
+<section id="objective">
+<h3><em>2.4 Objective</em><a class="headerlink" href="#objective" title="Permalink to this headline">¶</a></h3>
+<p>An objective defines what is trying to be achieved in the optimization problem. It is made up of the criterion being measured, the service providing the evaluation, and the physical scenario under which the objective value is being considered. The input deck only defines one objective, but the objective can be made up of multiple sub-objectives–each with its own criterion, service, and scenario. The sub-objectives can be weighted based on their importance in the problem.</p>
+</section>
+<section id="constraint">
+<h3><em>2.5 Constraint</em><a class="headerlink" href="#constraint" title="Permalink to this headline">¶</a></h3>
+<p>A constraint defines limitations on quantities of interest in the optimization problem. For example, in a stress-constrained mass minimization problem the user defines a maximum stress that any point in the design can experience. In a compliance minimization problem the user will typically put a constraint on the volume or mass of the final design. Similar to an objective, a constraint is made up of the criterion being measured, the service providing the evaluation, and the physical scenario under which the constraint value is being measured. Currently, Plato only allows a single constraint in a given optimization problem.</p>
+</section>
+</section>
+<section id="input-deck-options">
+<h2>3. Input Deck Options<a class="headerlink" href="#input-deck-options" title="Permalink to this headline">¶</a></h2>
+<p>This section will define all of the possible entries in the input deck and their corresponding syntax.</p>
+<section id="syntax">
+<h3><em>3.1 Syntax</em><a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
+<p>The input deck is organized into different groupings of commands called blocks. Five of the types of blocks (criterion, scenario, service, objective, constraint) were described in the <strong>TODO:</strong> “General Concepts” section. Each block will contain one or more lines containing keyword/value pairs. For example, “loads 1 5 6” is a keyword value pair where the keyword is “loads” and the value is made up of the 3 load ids “1 5 6”. <a class="reference internal" href="#descriptionofvaluetypes"><span class="std std-numref">Table 1</span></a> shows the different types of values and a description of each.</p>
+<span id="descriptionofvaluetypes"></span><table class="colwidths-given docutils align-center" id="id22">
+<caption><span class="caption-number">Table 1 </span><span class="caption-text">Description of Value Types</span><a class="headerlink" href="#id22" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 80%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Boolean</p></td>
+<td><p>Data that can only take on the value true or false.</p></td>
+</tr>
+<tr class="row-odd"><td><p>integer</p></td>
+<td><p>Data that can only take on integer values. Example: 4 10 50.</p></td>
+</tr>
+<tr class="row-even"><td><p>value</p></td>
+<td><p>Data that can only take on real or floating point values. Example: 4.33.</p></td>
+</tr>
+<tr class="row-odd"><td><p>string</p></td>
+<td><p>Data that can only take on string values. Example: stress.</p></td>
+</tr>
+</tbody>
+</table>
+<p>For each input deck parameter described in the following sections we use a variation of the syntax “parameter {integer}” to show the syntax for that parameter. Here are some examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>number processors {integer}</strong>: Indicates that the user should enter a single integer value for this parameter–“number processors 16”.</p></li>
+<li><p><strong>loads {integer}{…}</strong>: Indicates that the user should specify one or more integer values for this parameter separated by spaces–“loads 1 2 3”.</p></li>
+<li><p><strong>prune mesh {Boolean}</strong>: Indicates that the user should specify “true” or “false” for this parameter–“prune mesh true”.</p></li>
+<li><p><strong>type {string}</strong>: Indicates that the user should specify a string for this parameter– “type volume”.</p></li>
+<li><p><strong>load case weights {value}{…}</strong>: Indicates that the user should specify one or more real values–“load case weights 0.1 0.4 0.5”.</p></li>
+</ul>
+</div></blockquote>
+<p>Comments within an input deck can be specified as lines beginning with “//”. For that line, all symbols after the “//” will be ignored by the input deck parsing.</p>
+<figure class="align-center" id="id23" style="width: 400px">
+<span id="inputdeckexample"></span><img alt="alternative text" src="_images/InputDeckReferenceManual_2.5_figures_example_input_deck.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Example Plato input deck</span><a class="headerlink" href="#id23" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><a class="reference internal" href="#inputdeckexample"><span class="std std-numref">Fig. 1</span></a> shows a simple Plato input deck example.</p>
+</section>
+<section id="id1">
+<h3><em>3.2 Service</em><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify service blocks. Each service block begins and ends with the tokens “begin service {integer}” and “end service”. The integer following “begin service” specifies the identification index of this service. Other blocks in the input deck will use this value to reference the service. The following is a typical service block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin service 1</span>
+<span class="go">   code sierra_sd</span>
+<span class="go">   number_processors 16</span>
+<span class="go">end service</span>
+</pre></div>
+</div>
+<p>Plato input decks can contain one or more service blocks and the first serivce of every input deck must be a service with “code platomain”. The first service has the optimizer and is the one that orchestrates the execution of the optimization run. The plato input deck templates from which new plato problems are defined will always have the first service defined as the platomain service. The following tokens can be specified in any order within the service block.</p>
+<section id="code">
+<h4>3.2.1 code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h4>
+<p>Each service must specify the code (software executable) that will be providing the service in the format: “code {string}”. Current options include “platomain”, “sierra sd”, and “plato analyze”.</p>
+</section>
+<section id="number-processors">
+<h4>3.2.2 number_processors<a class="headerlink" href="#number-processors" title="Permalink to this headline">¶</a></h4>
+<p>Each service must specify the number of processors the service will be run on using the format: “number processors {integer}”. For GPU runs using Plato Analyze you will typically only specify one processor.</p>
+</section>
+<section id="device-ids">
+<h4>3.2.3 device_ids<a class="headerlink" href="#device-ids" title="Permalink to this headline">¶</a></h4>
+<p>When running on GPUs with Plato Analyze you can specify which GPU (device) to use if the machine you are running on has more than one GPU available. This is done using the format: “device ids {integer}{…}”. Typically, you will only specify one device id.</p>
+</section>
+<section id="cache-state">
+<h4>3.2.4 cache_state<a class="headerlink" href="#cache-state" title="Permalink to this headline">¶</a></h4>
+<p>Each service can specify whether it uses the “cache state” mechanism during the optimization run. This is done using the format: “cache state {Boolean}”. For efficiency services can utilize a caching mechanism that reduces the need for recomputing state variables in the physics problem. Currently, the SierraSD code requires the use of the cache state mechanism and so should always include “cache state true” in its service block.</p>
+</section>
+<section id="update-problem">
+<h4>3.2.5 update_problem<a class="headerlink" href="#update-problem" title="Permalink to this headline">¶</a></h4>
+<p>Each service can specify whether it uses the “update problem” mechanism during the optimization run. This is done using the format: “update problem {Boolean}”. Some optimization problems (such as stress-constrained mass minimization) require the physics code to update local state information at certain frequencies. The “update problem” flag specifies whether the optimizer will call the update operation for this service.</p>
+</section>
+</section>
+<section id="id2">
+<h3><em>3.3 Criterion</em><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify criterion blocks. Each criterion block begins and ends with the tokens “begin criterion {integer}” and “end criterion”. The integer following “begin criterion” specifies the identification index of this criterion. Other blocks in the input deck will use this value to reference the criterion. The following is a typical criterion block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin criterion 1</span>
+<span class="go">   type mechanical_compliance</span>
+<span class="go">end criterion</span>
+</pre></div>
+</div>
+<p>Plato input decks can contain an arbitrary number of criterion blocks. The following tokens can be specified in any order within the criterion block.</p>
+<section id="type">
+<h4>3.3.1 type<a class="headerlink" href="#type" title="Permalink to this headline">¶</a></h4>
+<p>Each criterion must have a type specified in the format: “type {string}”. <a class="reference internal" href="#descriptionofcriteriontypes"><span class="std std-numref">Table 2</span></a> lists a description of the allowable types and what physics code they can be used with.</p>
+<span id="descriptionofcriteriontypes"></span><table class="colwidths-given docutils align-center" id="id24">
+<caption><span class="caption-number">Table 2 </span><span class="caption-text">Description of supported criterion types and applicable physics codes</span><a class="headerlink" href="#id24" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 67%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Criterion Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Valid Code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>composite</p></td>
+<td><p>A criterion that is a combination of multiple sub-criteria. This type is currently only supported in the Plato Analyze service and is only used when you need a single Plato Analyze performer to evaluate multiple sub-criteria and combine them as a weighted sum before returning the value to the optimizer. For this to be valid all of the sub-criteria must use the same Scenario definition. A composite criterion includes the ids and weights of the sub-criteria that make it up.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>mechanical_compliance</p></td>
+<td><p>A measure of the stiffness of the structure. Minimizing this measure will make the structure stiffer.</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-even"><td><p>thermal_compliance</p></td>
+<td><p>A measure of the resistance to heat conduction. Minimizing this will maximize heat conduction.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>stress_and_mass</p></td>
+<td><p>Used for doing stress-constrained mass minimization problems.</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-even"><td><p>stress_p-norm</p></td>
+<td><p>Superscript p used to compute the norm of the stress.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>volume</p></td>
+<td><p>The volume of the current design.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-even"><td><p>mass</p></td>
+<td><p>The mass of the current design.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>CG_x</p></td>
+<td><p>X component of the center of gravity of the current design.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-even"><td><p>CG_y</p></td>
+<td><p>Y component of the center of gravity of the current design.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>CG_z</p></td>
+<td><p>Z component of the center of gravity of the current design.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-even"><td><p>Ixx</p></td>
+<td><p>Mass moment of inertia about the x axis.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>Iyy</p></td>
+<td><p>Mass moment of inertia about the y axis.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-even"><td><p>Izz</p></td>
+<td><p>Mass moment of inertia about the z axis.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ixy</p></td>
+<td><p>XY product of inertia.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-even"><td><p>Iyz</p></td>
+<td><p>YZ product of inertia.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ixz</p></td>
+<td><p>XZ product of inertia.</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-even"><td><p>flux_p-norm</p></td>
+<td><p>Superscript p used to compute the norm of the heat flux.</p></td>
+<td><p>PA</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="criterion-ids">
+<h4>3.3.2 criterion_ids<a class="headerlink" href="#criterion-ids" title="Permalink to this headline">¶</a></h4>
+<p>When defining a composite criterion this parameter defines the criteria that make up the composite criterion. The syntax for this paramter is: “criterion ids {integer}{…}”. The integer values are the ids of criteria making up the composite criterion.</p>
+</section>
+<section id="criterion-weights">
+<h4>3.3.3 criterion_weights<a class="headerlink" href="#criterion-weights" title="Permalink to this headline">¶</a></h4>
+<p>When defining a composite criterion this parameter defines the weights of the criteria that make up the composite criterion. The syntax for this paramter is: “criterion weights {value}{…}”.</p>
+</section>
+<section id="criterion-parameters-related-to-stress-constrained-mass-minimization-problems">
+<h4>3.3.4 Criterion Parameters Related to Stress-constrained Mass Minimization Problems<a class="headerlink" href="#criterion-parameters-related-to-stress-constrained-mass-minimization-problems" title="Permalink to this headline">¶</a></h4>
+<p>The stress-constrained mass minimization problem formulation includes an augmented lagrangian (AL) enforcement of local stress constraints as part of the objective evaluation. As such, there are various AL parameters that can be set as part of the “stress and mass” criterion. This section describes these parameters.</p>
+<p><strong>stress limit.</strong> The value of the VonMises stress under which the optimizer should try to constrain all points in the design. Syntax: “stress limit {value}”.</p>
+<p><strong>scmm initial penalty.</strong> The initial value of the penalization scalar used to enforce the local stress constraint. Syntax: “scmm initial penalty {value}”.</p>
+<p><strong>scmm penalty expansion multiplier.</strong> The amount to “grow” the stress constraint penalty by each time it is updated. Syntax: “scmm penalty expansion multiplier {value}”.</p>
+<p><strong>scmm constraint exponent.</strong> The power that the stress constraint term in the formulation will be raised to. Syntax: “scmm constraint exponent {value}”. A typical value is 2 or 3.</p>
+<p><strong>scmm penalty upper bound.</strong> The maximum value the stress constraint penalty can grow to. Syntax: “scmm penalty upper bound {value}”. <strong>Note: this parameter is only applicable when using Plato Analyze.</strong></p>
+</section>
+</section>
+<section id="id3">
+<h3><em>3.4 Scenario</em><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify scenario blocks. Each scenario block begins and ends with the tokens “begin scenario {integer}” and “end scenario”. The integer following “begin scenario” specifies the identification index of this scenario. Other blocks in the input deck will use this value to reference the scenario. The following is a typical scenario block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin scenario 1</span>
+<span class="go">   physics steady_state_mechanics</span>
+<span class="go">   dimensions 3</span>
+<span class="go">   loads 1 2</span>
+<span class="go">   boundary_conditions 5</span>
+<span class="go">   material 1</span>
+<span class="go">   minimum_ersatz_material_value 1e-3</span>
+<span class="go">end scenario</span>
+</pre></div>
+</div>
+<p>Plato input decks can contain an arbitrary number of scenario blocks. The following tokens can be specified in any order within the scenario block.</p>
+<section id="pysics">
+<h4>3.4.1 pysics<a class="headerlink" href="#pysics" title="Permalink to this headline">¶</a></h4>
+<p>Each scenario must specify the physics in the format: “physics {string}”. <a class="reference internal" href="#descriptionofavailablephysics"><span class="std std-numref">Table 3</span></a> lists the supported physics, a brief description, and which physics code can be used.</p>
+<span id="descriptionofavailablephysics"></span><table class="colwidths-given docutils align-center" id="id25">
+<caption><span class="caption-number">Table 3 </span><span class="caption-text">Description of available physics</span><a class="headerlink" href="#id25" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 57%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Physics</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Valid Code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>steady_state_mechanics</p></td>
+<td><p>Static solution with simple linear elasticity</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>steady_state_thermal</p></td>
+<td><p>Steady state heat conduction</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-even"><td><p>steady_state_thermomechanics</p></td>
+<td><p>Static mechanical solution with heat conduction</p></td>
+<td><p>PA</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="dimensions">
+<h4>3.4.2 dimensions<a class="headerlink" href="#dimensions" title="Permalink to this headline">¶</a></h4>
+<p>Within each scenario the user MUST specify the dimensions of the problem in the format: “dimensions {integer}”. Possible values are 2 and 3.</p>
+</section>
+<section id="loads">
+<h4>3.4.3 loads<a class="headerlink" href="#loads" title="Permalink to this headline">¶</a></h4>
+<p>Within each scenario the user MUST specify its relevant loads in the format: “loads {integer}{…}”. The integer values are the ids of load blocks defined elsewhere in the input deck.</p>
+</section>
+<section id="boundary-conditions">
+<h4>3.4.4 boundary_conditions<a class="headerlink" href="#boundary-conditions" title="Permalink to this headline">¶</a></h4>
+<p>Within each scenario the user MUST specify its relevant boundary conditions in the format: “boundary conditions {integer}{…}”. The integer values are the ids of boundary condition blocks defined in the input deck.</p>
+</section>
+<section id="minimum-ersatz-material-value">
+<h4>3.4.5 minimum_ersatz_material_value<a class="headerlink" href="#minimum-ersatz-material-value" title="Permalink to this headline">¶</a></h4>
+<p>Within each scenario the user MAY specify the minimum density value that can exist in the design using the format: “minimum ersatz material value {value}”.</p>
+</section>
+<section id="tolerance">
+<h4>3.4.6 tolerance<a class="headerlink" href="#tolerance" title="Permalink to this headline">¶</a></h4>
+<p>Within each scenario the user MAY specify the physics linear solver tolerance using the format: “tolerance {value}”.</p>
+</section>
+<section id="material-penalty-model">
+<h4>3.4.7 material_penalty_model<a class="headerlink" href="#material-penalty-model" title="Permalink to this headline">¶</a></h4>
+<p>Within each scenario the user MAY specify the material penalty model to be used in density-based topology optimization problems using the format: “material penalty model {string}”. Valid models are “simp” and “ramp”. The default value is “simp”.</p>
+</section>
+<section id="material-penalty-exponent">
+<h4>3.4.8 material_penalty_exponent<a class="headerlink" href="#material-penalty-exponent" title="Permalink to this headline">¶</a></h4>
+<p>Within each scenario the user MAY specify the material penalty exponent to be used in density-based topology optimization problems using the format: “material penalty exponent {value}”. The default value is 3.0.</p>
+</section>
+<section id="weight-mass-scale-factor">
+<h4>3.4.9 weight_mass_scale_factor<a class="headerlink" href="#weight-mass-scale-factor" title="Permalink to this headline">¶</a></h4>
+<p>This is a SierraSD-specific paramter for doing internal conversion of lbf and lbm when using English units. Here is the description from the SierraSD user’s manual: “This variable multiplies all mass and density on the input, and divides out the results on the output. It is provided primarily for the english system of units where the natural units of mass are actually units of force. For example, the density of steel is 0.283 lbs/in3, but lbs includes the units of g= 386.4 in/s2. Using a value of wtmass of 0.00259 (1/386.4), density can be entered as 0.283, the outputs will be in pounds, but the calculations will be performed using the correct mass units.” The format for this paramter is: “weight mass scale factor {value}”.</p>
+</section>
+</section>
+<section id="id4">
+<h3><em>3.5 Objective</em><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify the objective block. Each input deck contains only one objective block. However, the objective can be made up of one or more sub-objectives. The objective block begins and ends with the tokens “begin objective” and “end objective”. The following is a typical objective block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin objective</span>
+<span class="go">   type weighted_sum</span>
+<span class="go">   services 2 3</span>
+<span class="go">   criteria 3 4</span>
+<span class="go">   scenarios 1 2</span>
+<span class="go">   weights 1.0 0.75</span>
+<span class="go">end objective</span>
+</pre></div>
+</div>
+<p>The example objective above is made up of two sub-objectives. The first sub-objective uses service 2, criterion 3, scenario 1, and is weighted with a value of 1.0. The second sub-objective uses service 3, criterion 4, scenario 2, and is weighted with a value of 0.75. The services, criteria, and scenarios are defined elsewhere in the input deck and referenced in the objective by their id. In this example, to evaluate the objective the sub-objectives are evaluated, scaled by their corresponding weights, and then summed. The following tokens can be specified in any order within the objective block.</p>
+<section id="id5">
+<h4>3.5.1 type<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<p>Each objective must specify its type using the format: “type {string}”. Valid types are “single criterion” and “weighted sum”.</p>
+</section>
+<section id="services">
+<h4>3.5.2 services<a class="headerlink" href="#services" title="Permalink to this headline">¶</a></h4>
+<p>Each objective must specify the services used by the sub-objectives using the format: “services {integer}{…}”. There must be one service specified for each sub-objective.</p>
+</section>
+<section id="criteria">
+<h4>3.5.3 criteria<a class="headerlink" href="#criteria" title="Permalink to this headline">¶</a></h4>
+<p>Each objective must specify the criteria used by the sub-objectives using the format: “criteria {integer}{…}”. There must be one criterion specified for each sub-objective.</p>
+</section>
+<section id="scenarios">
+<h4>3.5.4 scenarios<a class="headerlink" href="#scenarios" title="Permalink to this headline">¶</a></h4>
+<p>Each objective must specify the scenarios used by the sub-objectives using the format: “scenarios {integer}{…}”. There must be one scenario specified for each sub-objective.</p>
+</section>
+<section id="weights">
+<h4>3.5.5 weights<a class="headerlink" href="#weights" title="Permalink to this headline">¶</a></h4>
+<p>Each objective must specify the weights used by the sub-objectives if it is a “weighted sum” type objective. This is done using the format: “weights {value}{…}”. There must be one weight specified for each sub-objective. Weights need not sum to 1.0.</p>
+</section>
+<section id="shape-services">
+<h4>3.5.6 shape_services<a class="headerlink" href="#shape-services" title="Permalink to this headline">¶</a></h4>
+<p>For shape or CAD parameter optimization additional services are needed to provide the CAD parameter sensitivities for the optimizer. These services are specifed using the format: “shape services {integer}{…}”. There must be one shape service specified for each sub- objective.</p>
+</section>
+<section id="multi-load-case">
+<h4>3.5.7 multi_load_case<a class="headerlink" href="#multi-load-case" title="Permalink to this headline">¶</a></h4>
+<p>When using the SierraSD physics code there is an option to have a single sierra sd service calculate the sub-objectives associated with multiple load cases in sequence rather than requiring multiple sierra sd services. This would typically be done when you are resource-limited and can’t afford to run multiple instances of sierra sd–one for each load case. In this case you would specify “multi load case true” in the objective block and set all of your sub-objective service ids to be the single sierra sd service that will be running the different load cases in sequence. When the optimizer asks for the objective evaluation at each iteration the sierra sd service will calculate each of the sub-objectives corresponding to the different load cases sequentially, create a weighted sum of the sub-objectives using the weights specified in the objective block, and then return a single objective value to the optimizer.</p>
+</section>
+</section>
+<section id="id6">
+<h3><em>3.6 Constraint</em><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify constraint blocks. Currently, the user is only allowed to specify one contraint in the input deck. The constraint block begins and ends with the tokens “begin constraint {integer}” and “end constraint”. The integer following “begin constraint” will eventually be used to support multiple constraints in a single Plato run. The following is a typical constraint block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin constraint 1</span>
+<span class="go">   service 1</span>
+<span class="go">   criterion 3</span>
+<span class="go">   scenario 1</span>
+<span class="go">   relative_target 0.5</span>
+<span class="go">end constraint</span>
+</pre></div>
+</div>
+<p>The following tokens can be specified in any order within the constraint block.</p>
+<section id="id7">
+<h4>3.6.1 service<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<p>Each constraint must specify a service in the format: “service {integer}”. This service will calculate the constraint value.</p>
+</section>
+<section id="id8">
+<h4>3.6.2 criterion<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<p>Each constraint must specify a criterion in the format: “criterion {integer}”. This is the criterion that will be evaluated in order to determine how well the constraint is being met. For example, in the example constraint above criterion 3 could be volume in which case service 1 would calculate the volume and then this value would be used to determine how well the relative constraint target of 0.5 was being met.</p>
+</section>
+<section id="id9">
+<h4>3.6.3 scenario<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
+<p>Each constraint must specify a scenario in the format: “scenario {integer}”. The scenario defines the physics conditions under which the constraint is evaluated.</p>
+</section>
+<section id="relative-target">
+<h4>3.6.4 relative_target<a class="headerlink" href="#relative-target" title="Permalink to this headline">¶</a></h4>
+<p>Each constraint can specify a target value either as a relative target or an absolute target. For relative targets the syntax is: “relative target {value}”. Currently, the only constraint that makes sense to use a relative value for is volume. In this case the user specifies a target relative to the starting volume of the design domain. In the example constraint above the relative target of 0.5 would mean we want the final design to use 50% of the original design domain as our volume budget.</p>
+</section>
+<section id="absolute-target">
+<h4>3.6.5 absolute_target<a class="headerlink" href="#absolute-target" title="Permalink to this headline">¶</a></h4>
+<p>Each constraint can specify a target value either as a relative target or an absolute target. For absolute targets the syntax is: “absolute target {value}”. An example of a constraint with an absolute target would be a volume constraint where you are specifying an abosolute volume value that your final design must adhere to.</p>
+</section>
+</section>
+<section id="load">
+<h3><em>3.7 Load</em><a class="headerlink" href="#load" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify load blocks. Each load block begins and ends with the tokens “begin load {integer}” and “end load”. The integer following “begin load” specifies the identification index of this load. Other blocks in the input deck will use this value to reference the load. The following is a typical load block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin load 1</span>
+<span class="go">   type traction</span>
+<span class="go">   location_type sideset</span>
+<span class="go">   location_name ss_1</span>
+<span class="go">   value 0 -3e3 0</span>
+<span class="go">end load</span>
+</pre></div>
+</div>
+<p>The following tokens can be specified in any order within the load block.</p>
+<section id="id10">
+<h4>3.7.1 type<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
+<p>Each load must specify the type using the format: “type {string}”. Current options include “traction”, “uniform surface flux”, “pressure”, “acceleration”, and “force”. <a class="reference internal" href="#descriptionofsupportedloadtypes"><span class="std std-numref">Table 4</span></a> lists a description of the allowable types of loads and the physics code they can be used with.</p>
+<span id="descriptionofsupportedloadtypes"></span><table class="colwidths-given docutils align-center" id="id26">
+<caption><span class="caption-number">Table 4 </span><span class="caption-text">Description of supported load types</span><a class="headerlink" href="#id26" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 57%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Load Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Valid Code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>traction</p></td>
+<td><p>Arbitray direction traction load on a surface. Specify traction component values separated by spaces (e.g. 0.2 2e-3 200 in three dimensions).</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>pressure</p></td>
+<td><p>Surface load normal to the surface. Specified by a single scalar value.</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-even"><td><p>force</p></td>
+<td><p>Point load applied at nodes in a nodeset or sideset. Specify force component values separated by spaces (e.g. 0.2 2e-3 200 in three dimensions).</p></td>
+<td><p>SD</p></td>
+</tr>
+<tr class="row-odd"><td><p>acceleration</p></td>
+<td><p>Body load applied to the whole model.</p></td>
+<td><p>SD</p></td>
+</tr>
+<tr class="row-even"><td><p>uniform_surface_flux</p></td>
+<td><p>Thermal surface load. Single value specifying the normal flux to the surface.</p></td>
+<td><p>PA</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="location-type">
+<h4>3.7.2 location_type<a class="headerlink" href="#location-type" title="Permalink to this headline">¶</a></h4>
+<p>Each load must specify the application location type using the format: “location type {string}”. Current options include “sideset” and “nodeset”. When using Plato Analyze all loads are applied on sidesets.</p>
+</section>
+<section id="location-name">
+<h4>3.7.3 location_name<a class="headerlink" href="#location-name" title="Permalink to this headline">¶</a></h4>
+<p>Each load must specify an application location either by name or id depending on which physics code is being used. The syntax for specifying by name is:“location name {string}”. SierraSD uses ids to identify sidesets and nodesets and Plato Analyze uses names to identify sidesets. Therefore, sidesets must be named when using Plato Analyze.</p>
+</section>
+<section id="location-id">
+<h4>3.7.4 location_id<a class="headerlink" href="#location-id" title="Permalink to this headline">¶</a></h4>
+<p>Each load must specify an application location either by name or id depending on which physics code is being used. The syntax for specifying by id is:“location id {integer}”. SierraSD uses ids to identify sidesets and nodesets and Plato Analyze uses names to identify sidesets. Therefore, sidesets must be named when using Plato Analyze.</p>
+</section>
+<section id="value">
+<h4>3.7.5 value<a class="headerlink" href="#value" title="Permalink to this headline">¶</a></h4>
+<p>Each load must specify a value using the syntax:“value {value}{…}”. Depending on the type of load more than one value may need to be specified. For example, traction loads require x, y, and z components so it would be specified like this: “value 0 -3e3 0”.</p>
+</section>
+</section>
+<section id="boundary-condition">
+<h3><em>3.8 Boundary Condition</em><a class="headerlink" href="#boundary-condition" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify essential/Dirichlet boundary condition blocks. Each boundary condition block begins and ends with the tokens “begin boundary condition {integer}” and “end boundary condition”. The integer following “begin boundary condition” specifies the identification index of this boundary condition. Other blocks in the input deck will use this value to reference the boundary condition. The following is a typical boundary condition block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin boundary_condition 1</span>
+<span class="go">   type fixed_value</span>
+<span class="go">   location_type sideset</span>
+<span class="go">   location_name ss_1</span>
+<span class="go">   degree_of_freedom temp</span>
+<span class="go">   value 0.0</span>
+<span class="go">end boundary_condition</span>
+</pre></div>
+</div>
+<p>The following tokens can be specified in any order within the boundary condition block.</p>
+<section id="id11">
+<h4>3.8.1 type<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<p>Each boundary condition must specify the type using the format: “type {string}”. Current options include “fixed value” and “insulated”.</p>
+</section>
+<section id="id12">
+<h4>3.8.2 location_type<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
+<p>Each boundary condition must specify the application location type using the format: “location type {string}”. Current options include “sideset” and “nodeset”. When using Plato Analyze all boudnary conditions are applied on sidesets.</p>
+</section>
+<section id="id13">
+<h4>3.8.3 location_name<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<p>Each boundary condition must specify a application location either by name or id de- pending on which physics code is being used. The syntax for specifying by name is: “location name {string}”. SierraSD uses ids to identify sidesets and nodesets and Plato Analyze uses names to identify sidesets. Therefore, sidesets must be named when using Plato Analyze.</p>
+</section>
+<section id="id14">
+<h4>3.8.4 location_id<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+<p>Each boundary condition must specify a application location either by name or id depending on which physics code is being used. The syntax for specifying by id is:“location name {integer}”. SierraSD uses ids to identify sidesets and nodesets and Plato Analyze uses names to identify sidesets. Therefore, sidesets must be named when using Plato Analyze.</p>
+</section>
+<section id="degree-of-freedom">
+<h4>3.8.5 degree_of_freedom<a class="headerlink" href="#degree-of-freedom" title="Permalink to this headline">¶</a></h4>
+<p>Depending on the boundary condition type you may need to specify a degree of freedom. The syntax is:“degree of freedom {string}{…}”. Possible values for degrees of freedom are “temp” (temperature), “dispx” (displacement in the x direction), “dispy” (displacement in the y direction), and “dispz” (displacement in the z direction). Multiple degrees of freedom can be specified in a single “fixed value” boundary condition by listing the degrees of freedom separated by spaces. For example, you can specify a fixed value boundary condition for all 3 displacement directions with the following: “degree of freedom dispx dispy dispz”. If you specify more than one degree of freedom in this way you must also have the same number or corresponding values in the “value” line. So, for the example just given your “value” line would need to be: “value 0 0 0” for a fixed value of 0.0 in all 3 directions.</p>
+</section>
+<section id="id15">
+<h4>3.8.6 value<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
+<p>Each boundary condition can specify a value using the syntax:“value {value}{…}”.</p>
+</section>
+</section>
+<section id="block">
+<h3><em>3.9 Block</em><a class="headerlink" href="#block" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify “block” blocks. Each “block” block begins and ends with the tokens “begin block {integer}” and “end block”. The integer following “begin block” specifies the identification index of this “block”. Other blocks in the input deck will use this value to reference the “block”. The following is a typical “block” definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin block 1</span>
+<span class="go">   material 1</span>
+<span class="go">   element_type tet4</span>
+<span class="go">end block</span>
+</pre></div>
+</div>
+<p>The following tokens can be specified in any order within the “block” block.</p>
+<section id="material">
+<h4>3.9.1 material<a class="headerlink" href="#material" title="Permalink to this headline">¶</a></h4>
+<p>Each block must specify a material using the format: “material {integer}”.</p>
+</section>
+<section id="element-type">
+<h4>3.9.2 element_type<a class="headerlink" href="#element-type" title="Permalink to this headline">¶</a></h4>
+<p>Each block can specify the element type using the format: “element type {string}”. <a class="reference internal" href="#descriptionofsupportedelementtypes"><span class="std std-numref">Table 5</span></a> lists a description of the allowable element types and what physics code they can be used with.</p>
+<span id="descriptionofsupportedelementtypes"></span><table class="colwidths-given docutils align-center" id="id27">
+<caption><span class="caption-number">Table 5 </span><span class="caption-text">Description of supported element types</span><a class="headerlink" href="#id27" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 57%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Element Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Valid Code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tet4</p></td>
+<td><p>First-order tet element.</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>hex8</p></td>
+<td><p>First-order hex element.</p></td>
+<td><p>SD</p></td>
+</tr>
+<tr class="row-even"><td><p>tet10</p></td>
+<td><p>Second-order tet element.</p></td>
+<td><p>SD</p></td>
+</tr>
+<tr class="row-odd"><td><p>rbar</p></td>
+<td><p>See <a class="reference external" href="http://www.sandia.gov/plato3d/_assets/documents/SierraSDUsers.pdf">SierraSD User’s Manual</a>.</p></td>
+<td><p>SD</p></td>
+</tr>
+<tr class="row-even"><td><p>rbe3</p></td>
+<td><p>See <a class="reference external" href="http://www.sandia.gov/plato3d/_assets/documents/SierraSDUsers.pdf">SierraSD User’s Manual</a>.</p></td>
+<td><p>SD</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="id17">
+<h3><em>3.10 Material</em><a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify material blocks. Each material block begins and ends with the tokens “begin material {integer}” and “end material”. The integer following “begin material” specifies the identification index of this material. Other blocks in the input deck will use this value to reference the material. The following is a typical material block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin material 1</span>
+<span class="go">   material_model isotropic_linear_thermal</span>
+<span class="go">   thermal_conductivity 210</span>
+<span class="go">   mass_density 2703</span>
+<span class="go">   specific_heat 900</span>
+<span class="go">end material</span>
+</pre></div>
+</div>
+<p>The following tokens can be specified in any order within the material block.</p>
+<section id="material-model">
+<h4>3.10.1 material_model<a class="headerlink" href="#material-model" title="Permalink to this headline">¶</a></h4>
+<p>Each material must specify a material model using the format: “material model {string}”. <a class="reference internal" href="#descriptionofsupportedmaterialmodels"><span class="std std-numref">Table 6</span></a> lists the allowable material models and what physics code they can be used with.</p>
+<span id="descriptionofsupportedmaterialmodels"></span><table class="colwidths-given docutils align-center" id="id28">
+<caption><span class="caption-number">Table 6 </span><span class="caption-text">Description of supported element types</span><a class="headerlink" href="#id28" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 67%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Material Model</p></th>
+<th class="head"><p>Valid Code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>isotropic_linear_elastic</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>orthotropic_linear_elastic</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-even"><td><p>isotropic_linear_thermal</p></td>
+<td><p>PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>isotropic_linear_thermoelastic</p></td>
+<td><p>PA</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="isotropic-linear-elastic-properties">
+<h4>3.10.2 Isotropic Linear Elastic Properties<a class="headerlink" href="#isotropic-linear-elastic-properties" title="Permalink to this headline">¶</a></h4>
+<p><strong>youngs modulus</strong>. Syntax: “youngs modulus {value}”.</p>
+<p><strong>poissons ratio</strong>. Syntax: “poissons ratio {value}”.</p>
+<p><strong>mass density</strong>. Syntax: “mass density {value}”.</p>
+</section>
+<section id="orthotropic-linear-elastic-properties">
+<h4>3.10.3 Orthotropic Linear Elastic Properties<a class="headerlink" href="#orthotropic-linear-elastic-properties" title="Permalink to this headline">¶</a></h4>
+<p><strong>youngs modulus x</strong>. Syntax: “youngs modulus x {value}”.</p>
+<p><strong>youngs modulus y</strong>. Syntax: “youngs modulus y {value}”.</p>
+<p><strong>youngs modulus z</strong>. Syntax: “youngs modulus z {value}”.</p>
+<p><strong>poissons ratio xy</strong>. Syntax: “poissons ratio xy {value}”.</p>
+<p><strong>poissons ratio xz</strong>. Syntax: “poissons ratio xz {value}”.</p>
+<p><strong>poissons ratio yz</strong>. Syntax: “poissons ratio yz {value}”.</p>
+<p><strong>shear modulus xy</strong>. Syntax: “shear modulus xy {value}”.</p>
+<p><strong>shear modulus xz</strong>. Syntax: “shear modulus xz {value}”.</p>
+<p><strong>shear modulus yz</strong>. Syntax: “shear modulus yz {value}”.</p>
+<p><strong>mass density</strong>. Syntax: “mass density {value}”.</p>
+</section>
+<section id="isotropic-linear-thermal-properties">
+<h4>3.10.4 Isotropic Linear Thermal Properties<a class="headerlink" href="#isotropic-linear-thermal-properties" title="Permalink to this headline">¶</a></h4>
+<p><strong>thermal conductivity</strong>. Syntax: “thermal conductivity {value}”.</p>
+<p><strong>mass density</strong>. Syntax: “mass density {value}”.</p>
+<p><strong>specific heat</strong>. Syntax: “specific heat {value}”.</p>
+</section>
+<section id="isotropic-linear-thermoelastic-properties">
+<h4>3.10.5 Isotropic Linear Thermoelastic Properties<a class="headerlink" href="#isotropic-linear-thermoelastic-properties" title="Permalink to this headline">¶</a></h4>
+<p><strong>thermal conductivity</strong>. Syntax: “thermal conductivity {value}”.</p>
+<p><strong>youngs modulus</strong>. Syntax: “youngs modulus {value}”.</p>
+<p><strong>poissons ratio</strong>. Syntax: “poissons ratio {value}”.</p>
+<p><strong>thermal expansivity</strong>. Syntax: “thermal expansivity {value}”.</p>
+<p><strong>reference temperature</strong>. Syntax: “reference temperature {value}”.</p>
+<p><strong>mass density</strong>. Syntax: “mass density {value}”.</p>
+</section>
+</section>
+<section id="optimization-parameters">
+<h3><em>3.11 Optimization Parameters</em><a class="headerlink" href="#optimization-parameters" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify the optimization parameters block. The optimization parameters block begins and ends with the tokens “begin optimization parameters” and “end “optimization parameters”. The following is a typical optimization parameters block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin optimization_parameters</span>
+<span class="go">   optimization_algorithm oc</span>
+<span class="go">   discretization density</span>
+<span class="go">   initial_density_value 0.5</span>
+<span class="go">   filter_radius_scale 1.75</span>
+<span class="go">   max_iterations 10</span>
+<span class="go">   output_frequency 5</span>
+<span class="go">end optimization_parameters</span>
+</pre></div>
+</div>
+<p>The following tokens can be specified in any order within the optimization parameters block.</p>
+<section id="general-optimization-parameters">
+<h4>3.11.1 General Optimization Parameters<a class="headerlink" href="#general-optimization-parameters" title="Permalink to this headline">¶</a></h4>
+<p><strong>optimization type</strong>. This parameter specifies the type of optimization you are doing. The syntax is: “optimization type {string}” and valid options are “topology” and “shape”.</p>
+<p><strong>optimization algorithm</strong>. This parameter specifies which optimization algorithm will be used. The syntax is: “optimization algorithm {string}”. Currently supported options are “oc” (Optimality Criteria), “mma” (Method of Moving Asymptotes), “ksbc” (Kelley Sachs Bound Constrained), and “ksal” (Kelley Sachs Augmented Lagrangian). “oc”, “mma”, and “ksal” require a constraint in the optimization problem, however “ksbc” does not. “oc” is typically only used for simple linear statics or linear thermal type problems. For other physics one of the other optimization algorithms should be used.</p>
+<p><strong>fixed block ids</strong>. This parameter allows the user to specify which mesh blocks in a topology optimization problem should remain fixed and not “designed” by the optimizer. The syntax is: “fixed block ids {integer}{…}”. The integer values are the ids of the blocks that should remain fixed.</p>
+<p><strong>fixed sideset ids</strong>. This parameter allows the user to specify which mesh sidesets in a topology optimization problem should remain fixed and not “designed” by the optimizer. The syntax is: “fixed sideset ids {integer}{…}”. The integer values are the ids of the sidesets that should remain fixed.</p>
+<p><strong>fixed nodeset ids</strong>. This parameter allows the user to specify which mesh nodesets in a topology optimization problem should remain fixed and not “designed” by the optimizer. The syntax is: “fixed nodeset ids {integer}{…}”. The integer values are the ids of the nodesets that should remain fixed.</p>
+<p><strong>max iterations</strong>. This parameter specifies how many iterations the optimizer will take if it doesn’t meet some other stopping criteria first. The syntax is: “max iterations {integer}”.</p>
+<p><strong>output frequency</strong>. This parameter specifies how often Plato will output a design result. The syntax is: “output frequncy {integer}” where the specified integer is how many iterations between design output. Design iterations are in the form of an exodus mesh and are written to the run directory. They are usually called something like “Iteration005.exo” where the number in the filename indicates which iteration it came from. If running from the Plato GUI the design result will automatically be loaded as a CubitTMmodel and displayed in the graphics window.</p>
+<p><strong>output method</strong>. This parameter specifies how results in parallel runs will be concatenated to a single file. The syntax is: “output method {string}”. The two valid options are “epu” and “parallel write”. The “epu” option will write result files in parallel to disk and then run the epu utility to concatenate the results. The “parallel write” option will use a parallel writing capability to write the results to a single concatenated result file without the need to run epu afterwards. The reason you might choose one over the other is if the performance proves to be better with one option over the other.</p>
+<p><strong>initial density value</strong>. This parameter allows the user to specify the initial density value for a topology optimization run. The syntax is: “initial density value {value}”.</p>
+<p><strong>write restart file</strong>. This parameter specifies whether to write restart files or not. The syntax is: “write restart file {Boolean}”. The reason you might set this to false is if writing restart files is taking too long and you want to improve performance. How- ever, be aware that restart files are needed if you will be restarting your run for any reason.</p>
+<p><strong>normalize in aggregator</strong>. This parameter allows the user to specify whether or not the objective values being returned from services will be normalized by an aggregation operation before they are passed along to the optimizer. The syntax is: “normalize in aggregator {Boolean}”. The default is for them to be normalized. There are a couple of advantages of normalizing. First, optimizer performance is typically enhanced when the objective value is approximately on the order of 1. Second, when running a problem that has more than one sub-objective, the sub-objective values will be of the same order of magnitude, allowing the weights to be specified more intuitively.</p>
+<p><strong>verbose</strong>. This parameter allows the user to specify whether verbose information will be output to the console during the optimization run. The syntax is: “verbose {Boolean}”. If this is set to “true” information about which stages and operations are being executed will be output to the console.</p>
+</section>
+<section id="filter-parameters">
+<h4>3.11.2 Filter Parameters<a class="headerlink" href="#filter-parameters" title="Permalink to this headline">¶</a></h4>
+<p>In density-based topology optimization problems it is often necessary to perform some sort of filtering (i.e. spatial weighted averaging) of the design variables themselves in order to avoid numerical instabilities and alleviate some of the mesh dependency of the optimized result. Additionally, the filter helps to ensure an approximate minimum length scale of features in the optimized design. While the filter does not completely eliminate the issue of mesh-dependency in many cases, it does greatly alleviate much of the issue and, therefore, should almost always be used. We recommend setting the filter radius to at least twice the size of a typical finite element in the design domain. Additionally we provide the option to utilize subsequent projection operations which often help to result in designs which are closer to black-and-white (i.e. 0 or 1) when the filter operation results in a large transition region with intermediate density values.</p>
+<p><strong>filter radius scale</strong>. This parameter allows the user to specify the filter radius as a scaling of the average length of the edges in the mesh. The syntax is: “filter radius scale {value}” where the value is the scale factor that will be used to come up with the filter radius. For example, if the average mesh edge length is 1.5 and the scale factor is specified as 2.0 then the resulting filter radius will be 3.0.</p>
+<p><strong>filter radius absolute</strong>. This parameter allows the user to specify the filter radius as an absolute value. The syntax is: “filter radius absolute {value}” where the value is what will be used as the filter radius.</p>
+<p><strong>filter type</strong>. This parameter specifies what type of filter to use on the design variables in topology optimization runs. The syntax is: “filter type {string}”. Valid filter types are “identity”, “kernel”, “kernel then heaviside”, and “kernel then tanh”.</p>
+<p><strong>filter heaviside min</strong>. Determines the initial value of the heaviside steepness parameter for kernel then heaviside and kernel then tanh. A value near zero results in a near linear projection, and as the value increases to infinity, the projection becomes closer to a true heaviside funciton. The syntax is: “filter heaviside min {value}”.</p>
+<p><strong>filter heaviside max</strong>. Determines the maximum value of the heaviside steepness parameter for kernel then heaviside and kernel then tanh. A value near zero results in a near linear projection, and as the value increases to infinity, the projection becomes closer to a true heaviside funciton. The syntax is: “filter heaviside max {value}”.</p>
+<p><strong>filter heaviside update</strong>. The value by which the heaviside steepness parameter increases as it increases from filter heaviside min to filter heaviside max. If filter use additive continuation is set to false, the heaviside steepness parameter is multiplied by this value each time the projection is updated, otherwise, this value is added to the heaviside steepness parameter. The syntax is: “filter heaviside update {value}”.</p>
+<p><strong>filter projection start iteration</strong>. The first optimization iteration that the heaviside steepness parameter will be updated. The syntax is: “filter projection start iteration {integer}”.</p>
+<p><strong>filter projection update interval</strong>. The frequency of optimization iterations with which to update the heaviside steepness parameter. The syntax is: “filter projection update interval {integer}”.</p>
+<p><strong>filter use additive continuation</strong>. If set to true, the heaviside steepness parameter will be increased additively by filter heaviside update on each update iteration. If set to false, the heaviside steepness parameter will be multiplied by filter heaviside update on each update iteration. The syntax is: “filter use additive continuation {Boolean}”.</p>
+<p><strong>filter in engine</strong>. This parameter allows the user to specify whether design variable filtering will take place in the PlatoMain service during topology optimization problems. Filtering in PlatoMain is the default behavior and should be used in most cases. The exception to this is when running problems using Plato Analyze that enforce symmetry. In this case filtering is done within Plato Analyze as part of the symmetry enforcement and so shouldn’t be done again in PlatoMain. In that case you would set this paramter to “false”. The syntax is: “filter in engine {Boolean}”.</p>
+</section>
+<section id="restart-parameters">
+<h4>3.11.3 Restart Parameters<a class="headerlink" href="#restart-parameters" title="Permalink to this headline">¶</a></h4>
+<p><strong>initial guess file name</strong>. This parameter specifies the name of the file used as the initial guess in a restart run. The syntax is: “initial guess file name {string}”. This will typically be a result file from a previous run in the form of a restart file or the main platomain.exo output file that contains all of the iteration information from a previous run.</p>
+<p><strong>initial guess field name</strong>. This parameter specifies the name of the nodal field within the initial guess file (see “initial guess file name”) that contains the design variable to be used as the initial guess for the restart run. The syntax is: “initial guess field name {string}”.</p>
+<p><strong>restart iteration</strong>. This parameter specifies the iteration in the initial guess file name that will be used to extract design variables for the initial guess for the restart run. The syntax is: “restart iteration {integer}”.</p>
+</section>
+<section id="prune-and-refine-parameters">
+<h4>3.11.4 Prune and Refine Parameters<a class="headerlink" href="#prune-and-refine-parameters" title="Permalink to this headline">¶</a></h4>
+<p><strong>prune mesh</strong>. This parameter specifies whether the mesh will be pruned during a prune and refine operation. The syntax is: “prune mesh {Boolean}”.</p>
+<p><strong>number refines</strong>. This parameter specifies the number of uniform mesh refinements that will take place as part of the prune and refine operation. The syntax is: “number refines {integer}”.</p>
+<p><strong>number buffer layers</strong>. This parameter specifies the number of buffer element layers that will be left around the pruned mesh during a prune and refine operation. The syntax is: “number buffer layers {integer}”. Buffer layers around the pruned mesh allow the design to evolve with additional freedom while avoiding running into the boundary of the pruned mesh. The more buffer layers you specify the more room the design will have to evolve in. However, the more buffer layers you specify the larger the mesh and the more computationally expensive the problem becomes.</p>
+<p><strong>number prune and refine processors</strong>. This parameter specifies the number of processors to use in the prune and refine operation. The syntax is: “number prune and refine processors {integer}”.</p>
+</section>
+<section id="shape-optimization-parameters">
+<h4>3.11.5 Shape Optimization Parameters<a class="headerlink" href="#shape-optimization-parameters" title="Permalink to this headline">¶</a></h4>
+<p><strong>csm file</strong>. This parameter specifies the name of the csm file that will be used in the shape optimization. The syntax is: “csm file {string}”. The csm file must be generated in Engineering Sketch Pad (ESP) before running the shape optimization.</p>
+<p><strong>num shape design variables</strong>. This parameter specifies the number of design variables in the shape optimization problem. When setting up a shape optimization problem using Engineering Sketch Pad you will decide which CAD parameters will be optimized. Then when you set up the Plato input deck you will need to specify the number of CAD parameters that are being optimized so that Plato can initialize the problem correclty. For more help on setting up shape optimization problems contact the Plato team at <a class="reference external" href="mailto:plato3D-help&#37;&#52;&#48;sandia&#46;gov">plato3D-help<span>&#64;</span>sandia<span>&#46;</span>gov</a>. The syntax for this parameter is: “num shape design variables {integer}”.</p>
+</section>
+<section id="id18">
+<h4>3.11.6 Optimization Parameters<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<p><strong>mma move limit</strong>. This parameter specifies the move limit value for the Method of Moving Asymptotes optimization algorithm. The syntax is: “mma move limit {value}”.</p>
+<p>(<strong>TODO:</strong> remove everything but this) <strong>hessian type</strong>. This parameter specifies the type of hessian approximation that will be used. The syntax is: “hessian type {string}”. Valid options are “lbfgs”.</p>
+<p><strong>limited memory storage</strong>. This parameter specifies how much gradient history storage will be used for the lbfgs hessian approximation. The default is 8. The syntax is: “limited memory storage {integer}”.</p>
+<p><strong>problem update frequency</strong>. This parameter specifies how many iterations will happen between calls to the “UpdateProblem” operation during the optimization run. The update problem operation is important for situations like applying continuation methods on penalty and projection function parameters in order to slowly increase the nonlinearity of the optimization problem, often providing better, more consistent results. The syntax is: “problem update frequency {integer}”.</p>
+</section>
+</section>
+<section id="output">
+<h3><em>3.12 Output</em><a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify output blocks. Each output block begins and ends with the tokens “begin output” and “end output”. Typically you will have one output block for each service that is calculating quantities of interest. The following is a typical output block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin output</span>
+<span class="go">   service 2</span>
+<span class="go">   data temperature</span>
+<span class="go">end output</span>
+</pre></div>
+</div>
+<p>The following tokens can be specified in any order within the output block.</p>
+<section id="id19">
+<h4>3.12.1 service<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<p>Each output block must specify the service providing the output using the syntax: “service {integer}”.</p>
+</section>
+<section id="data">
+<h4>3.12.2 data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h4>
+<p>Each output block must specify the data to output using the syntax: “data {string}{…}”. <a class="reference internal" href="#descriptionofsupportedoutput"><span class="std std-numref">Table 7</span></a> lists the allowable outputs and what physics code they can be used with.</p>
+<span id="descriptionofsupportedoutput"></span><table class="colwidths-given docutils align-center" id="id29">
+<caption><span class="caption-number">Table 7 </span><span class="caption-text">Description of supported output</span><a class="headerlink" href="#id29" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 43%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Output</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Valid Code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dispx</p></td>
+<td><p>X displacement</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>dispy</p></td>
+<td><p>Y displacement</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-even"><td><p>dispz</p></td>
+<td><p>Z displacement</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-odd"><td><p>vonmises</p></td>
+<td><p>Von Mises stress</p></td>
+<td><p>SD, PA</p></td>
+</tr>
+<tr class="row-even"><td><p>temperature</p></td>
+<td><p>Temperature</p></td>
+<td><p>PA</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="mesh">
+<h3><em>3.13 Mesh</em><a class="headerlink" href="#mesh" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify the mesh block. The mesh block begins and ends with the tokens “begin mesh” and “end mesh”. The following is a typical mesh block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin mesh</span>
+<span class="go">   name component.exo</span>
+<span class="go">end mesh</span>
+</pre></div>
+</div>
+<p>The following tokens can be specified in any order within the mesh block.</p>
+<section id="name">
+<h4>3.13.1 name<a class="headerlink" href="#name" title="Permalink to this headline">¶</a></h4>
+<p>The mesh block must specify the name of the mesh file being used for the optimization run. The syntax is: “name {string}”.</p>
+</section>
+</section>
+<section id="id20">
+<h3><em>3.14 Mesh</em><a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we show how to specify the paths block. This block is only necessary if you need to point to non-standard executables when doing Plato runs. An example would be if you were developing in the Plato code and wanted to test something using your own builds of either PlatoMain or the physics codes. In this case you would need to tell Plato where to find the executables you want it to use. The paths block begins and ends with the tokens “begin paths” and “end paths”. The following is an example paths block definition:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">begin paths</span>
+<span class="go">   code platomain /directory/to/my/own/PlatoMain/PlatoMain</span>
+<span class="go">   code sierra_sd /directory/to/a/different/SierraSD/plato_sd_main</span>
+<span class="go">end paths</span>
+</pre></div>
+</div>
+<p>The following tokens can be specified in any order within the mesh block.</p>
+<section id="id21">
+<h4>3.14.1 code<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
+<p>The alternate location to a code can be specified using the syntax: “code {string}{string}”. The first string parameter is the name of the code you are providing an alternative for. Valid options are “platomain”, “sierra sd”, “plato analyze”, and “prune and refine”. The second string parameter is the full path to the alternative code to be used.</p>
+</section>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><strong>Input Deck Reference</strong></a><ul>
+<li><a class="reference internal" href="#introduction">1. Introduction</a></li>
+<li><a class="reference internal" href="#general-concepts">2. General Concepts</a><ul>
+<li><a class="reference internal" href="#service"><em>2.1 Service</em></a></li>
+<li><a class="reference internal" href="#criterion"><em>2.2 Criterion</em></a></li>
+<li><a class="reference internal" href="#scenario"><em>2.3 Scenario</em></a></li>
+<li><a class="reference internal" href="#objective"><em>2.4 Objective</em></a></li>
+<li><a class="reference internal" href="#constraint"><em>2.5 Constraint</em></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#input-deck-options">3. Input Deck Options</a><ul>
+<li><a class="reference internal" href="#syntax"><em>3.1 Syntax</em></a></li>
+<li><a class="reference internal" href="#id1"><em>3.2 Service</em></a><ul>
+<li><a class="reference internal" href="#code">3.2.1 code</a></li>
+<li><a class="reference internal" href="#number-processors">3.2.2 number_processors</a></li>
+<li><a class="reference internal" href="#device-ids">3.2.3 device_ids</a></li>
+<li><a class="reference internal" href="#cache-state">3.2.4 cache_state</a></li>
+<li><a class="reference internal" href="#update-problem">3.2.5 update_problem</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2"><em>3.3 Criterion</em></a><ul>
+<li><a class="reference internal" href="#type">3.3.1 type</a></li>
+<li><a class="reference internal" href="#criterion-ids">3.3.2 criterion_ids</a></li>
+<li><a class="reference internal" href="#criterion-weights">3.3.3 criterion_weights</a></li>
+<li><a class="reference internal" href="#criterion-parameters-related-to-stress-constrained-mass-minimization-problems">3.3.4 Criterion Parameters Related to Stress-constrained Mass Minimization Problems</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3"><em>3.4 Scenario</em></a><ul>
+<li><a class="reference internal" href="#pysics">3.4.1 pysics</a></li>
+<li><a class="reference internal" href="#dimensions">3.4.2 dimensions</a></li>
+<li><a class="reference internal" href="#loads">3.4.3 loads</a></li>
+<li><a class="reference internal" href="#boundary-conditions">3.4.4 boundary_conditions</a></li>
+<li><a class="reference internal" href="#minimum-ersatz-material-value">3.4.5 minimum_ersatz_material_value</a></li>
+<li><a class="reference internal" href="#tolerance">3.4.6 tolerance</a></li>
+<li><a class="reference internal" href="#material-penalty-model">3.4.7 material_penalty_model</a></li>
+<li><a class="reference internal" href="#material-penalty-exponent">3.4.8 material_penalty_exponent</a></li>
+<li><a class="reference internal" href="#weight-mass-scale-factor">3.4.9 weight_mass_scale_factor</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id4"><em>3.5 Objective</em></a><ul>
+<li><a class="reference internal" href="#id5">3.5.1 type</a></li>
+<li><a class="reference internal" href="#services">3.5.2 services</a></li>
+<li><a class="reference internal" href="#criteria">3.5.3 criteria</a></li>
+<li><a class="reference internal" href="#scenarios">3.5.4 scenarios</a></li>
+<li><a class="reference internal" href="#weights">3.5.5 weights</a></li>
+<li><a class="reference internal" href="#shape-services">3.5.6 shape_services</a></li>
+<li><a class="reference internal" href="#multi-load-case">3.5.7 multi_load_case</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id6"><em>3.6 Constraint</em></a><ul>
+<li><a class="reference internal" href="#id7">3.6.1 service</a></li>
+<li><a class="reference internal" href="#id8">3.6.2 criterion</a></li>
+<li><a class="reference internal" href="#id9">3.6.3 scenario</a></li>
+<li><a class="reference internal" href="#relative-target">3.6.4 relative_target</a></li>
+<li><a class="reference internal" href="#absolute-target">3.6.5 absolute_target</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#load"><em>3.7 Load</em></a><ul>
+<li><a class="reference internal" href="#id10">3.7.1 type</a></li>
+<li><a class="reference internal" href="#location-type">3.7.2 location_type</a></li>
+<li><a class="reference internal" href="#location-name">3.7.3 location_name</a></li>
+<li><a class="reference internal" href="#location-id">3.7.4 location_id</a></li>
+<li><a class="reference internal" href="#value">3.7.5 value</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#boundary-condition"><em>3.8 Boundary Condition</em></a><ul>
+<li><a class="reference internal" href="#id11">3.8.1 type</a></li>
+<li><a class="reference internal" href="#id12">3.8.2 location_type</a></li>
+<li><a class="reference internal" href="#id13">3.8.3 location_name</a></li>
+<li><a class="reference internal" href="#id14">3.8.4 location_id</a></li>
+<li><a class="reference internal" href="#degree-of-freedom">3.8.5 degree_of_freedom</a></li>
+<li><a class="reference internal" href="#id15">3.8.6 value</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#block"><em>3.9 Block</em></a><ul>
+<li><a class="reference internal" href="#material">3.9.1 material</a></li>
+<li><a class="reference internal" href="#element-type">3.9.2 element_type</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id17"><em>3.10 Material</em></a><ul>
+<li><a class="reference internal" href="#material-model">3.10.1 material_model</a></li>
+<li><a class="reference internal" href="#isotropic-linear-elastic-properties">3.10.2 Isotropic Linear Elastic Properties</a></li>
+<li><a class="reference internal" href="#orthotropic-linear-elastic-properties">3.10.3 Orthotropic Linear Elastic Properties</a></li>
+<li><a class="reference internal" href="#isotropic-linear-thermal-properties">3.10.4 Isotropic Linear Thermal Properties</a></li>
+<li><a class="reference internal" href="#isotropic-linear-thermoelastic-properties">3.10.5 Isotropic Linear Thermoelastic Properties</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optimization-parameters"><em>3.11 Optimization Parameters</em></a><ul>
+<li><a class="reference internal" href="#general-optimization-parameters">3.11.1 General Optimization Parameters</a></li>
+<li><a class="reference internal" href="#filter-parameters">3.11.2 Filter Parameters</a></li>
+<li><a class="reference internal" href="#restart-parameters">3.11.3 Restart Parameters</a></li>
+<li><a class="reference internal" href="#prune-and-refine-parameters">3.11.4 Prune and Refine Parameters</a></li>
+<li><a class="reference internal" href="#shape-optimization-parameters">3.11.5 Shape Optimization Parameters</a></li>
+<li><a class="reference internal" href="#id18">3.11.6 Optimization Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#output"><em>3.12 Output</em></a><ul>
+<li><a class="reference internal" href="#id19">3.12.1 service</a></li>
+<li><a class="reference internal" href="#data">3.12.2 data</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mesh"><em>3.13 Mesh</em></a><ul>
+<li><a class="reference internal" href="#name">3.13.1 name</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id20"><em>3.14 Mesh</em></a><ul>
+<li><a class="reference internal" href="#id21">3.14.1 code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="documentation.html"
+                        title="previous chapter">Documentation For Plato</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="todo.html"
+                        title="next chapter">Things to add</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/inputdeck.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="todo.html" title="Things to add"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="documentation.html" title="Documentation For Plato"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><strong>Input Deck Reference</strong></a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Plato Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
+    </div>
+  </body>
+</html>
