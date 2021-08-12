@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Coding Style &#8212; Plato 0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Input Deck Reference" href="inputdeck.html" />
+    <link rel="prev" title="Documentation For Plato" href="documentation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="inputdeck.html" title="Input Deck Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="documentation.html" title="Documentation For Plato"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><strong>Coding Style</strong></a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="coding-style">
+<h1><strong>Coding Style</strong><a class="headerlink" href="#coding-style" title="Permalink to this headline">¶</a></h1>
+<p>This section contains all coding style guidelines related to the Plato project. They are organized by Variables, Classes, Functions, Files and Other Conventions.</p>
+<p>Special emphasis is given to the cardinal rules:</p>
+<ul class="simple">
+<li><p><strong>Each statement shall always be in a separate line however small it may appear.</strong></p></li>
+</ul>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">tOne</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="kt">int</span> <span class="n">tTwo</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// BAD!</span>
+
+<span class="kt">int</span> <span class="n">tOne</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                <span class="c1">// GOOD!</span>
+<span class="kt">int</span> <span class="n">tTwo</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>                <span class="c1">// GOOD!</span>
+</pre></div>
+</div>
+<p>An exception to the above rule is reserved for matrix data structures, e.g.,</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span> <span class="n">tMatrix</span> <span class="o">=</span> <span class="p">{</span> <span class="p">{</span><span class="n">C11</span><span class="p">,</span> <span class="n">C22</span><span class="p">,</span> <span class="n">C33</span><span class="p">},</span>
+                                             <span class="p">{</span><span class="n">C21</span><span class="p">,</span> <span class="n">C22</span><span class="p">,</span> <span class="n">C23</span><span class="p">},</span>
+                                             <span class="p">{</span><span class="n">C31</span><span class="p">,</span> <span class="n">C32</span><span class="p">,</span> <span class="n">C33</span><span class="p">}</span> <span class="p">};</span> <span class="c1">// GOOD!, PREFERRED</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span> <span class="n">tMatrix</span> <span class="o">=</span>
+    <span class="p">{</span> <span class="p">{</span><span class="n">C11</span><span class="p">,</span> <span class="n">C22</span><span class="p">,</span> <span class="n">C33</span><span class="p">},</span>
+      <span class="p">{</span><span class="n">C21</span><span class="p">,</span> <span class="n">C22</span><span class="p">,</span> <span class="n">C23</span><span class="p">},</span>
+      <span class="p">{</span><span class="n">C31</span><span class="p">,</span> <span class="n">C32</span><span class="p">,</span> <span class="n">C33</span><span class="p">}</span> <span class="p">};</span> <span class="c1">// GOOD!</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span> <span class="n">tMatrix</span> <span class="o">=</span> <span class="p">{</span> <span class="p">{</span><span class="n">C11</span><span class="p">,</span> <span class="n">C22</span><span class="p">,</span> <span class="n">C33</span><span class="p">},</span>
+<span class="p">{</span><span class="n">C21</span><span class="p">,</span> <span class="n">C22</span><span class="p">,</span> <span class="n">C23</span><span class="p">},</span>
+<span class="p">{</span><span class="n">C31</span><span class="p">,</span> <span class="n">C32</span><span class="p">,</span> <span class="n">C33</span><span class="p">}</span> <span class="p">};</span> <span class="c1">// BAD!</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>All Plato source code shall always be inside the Plato namespace. Any source code associated with a Plato module (Engine, Analyze, Model, and Optimize) is considered Plato source code.</strong></p></li>
+</ul>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="nn">Plato</span>
+<span class="p">{</span>
+    <span class="k">class</span> <span class="nc">MyPlatoClass</span>
+    <span class="p">{</span>
+        <span class="c1">// source code</span>
+    <span class="p">};</span>
+
+    <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">my_plato_inline_function</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// source code</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<section id="file-names">
+<h2>File Names<a class="headerlink" href="#file-names" title="Permalink to this headline">¶</a></h2>
+<p>File names shall always begin with Plato_, follow by an <a class="reference external" href="https://en.wikipedia.org/wiki/Camel_case">upper camel case</a> name. For instance, the following file name <code class="code docutils literal notranslate"><span class="pre">Plato_MyFileName.hpp</span></code> is acceptable.</p>
+</section>
+<section id="variables">
+<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<p>The following guidelines apply to variables.</p>
+<section id="naming-variables">
+<h3>Naming Variables<a class="headerlink" href="#naming-variables" title="Permalink to this headline">¶</a></h3>
+<p>Use clear and concise names for variables. If a variable’s name is to have multiple words, it should become increasingly accurate from right to left (i.e. Adjectives always go left). For example, <code class="code docutils literal notranslate"><span class="pre">aUserId</span></code> should be used over <code class="code docutils literal notranslate"><span class="pre">aIdUser</span></code>. Both are obviously some type of identification, thus “<strong>user</strong>” is the adjective that describes the “<strong>Id</strong>”. When variables have names with multiple words, use <a class="reference external" href="https://en.wikipedia.org/wiki/Camel_case">lower camel case</a> to distinguish each word, e.g. <code class="code docutils literal notranslate"><span class="pre">aUserId</span></code>. Use the proper prefix for a variable (see <a class="reference internal" href="#prefixes"><span class="std std-ref">Prefixes</span></a>). Finally, common words should be abbreviated (see <a class="reference internal" href="#abbreviations"><span class="std std-ref">Abbreviations</span></a>).</p>
+</section>
+<section id="prefixes">
+<span id="id1"></span><h3>Prefixes<a class="headerlink" href="#prefixes" title="Permalink to this headline">¶</a></h3>
+<p>When naming variables, use the following prefixes depending on the type of variable:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">Member</span> <span class="pre">variable</span></code>: m - (e.g., mVals, mNumRows)</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Argument</span> <span class="pre">variable</span></code>: a - (e.g., aVals, aInputParameter)</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Temporary</span> <span class="pre">variable</span></code>: t - (e.g., tVector)</p></li>
+</ul>
+</section>
+<section id="abbreviations">
+<span id="id2"></span><h3>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline">¶</a></h3>
+<p>The following abbreviations are approved in Plato:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">Glb</span></code> - Global (e.g. GlbIDs)</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Loc</span></code> - Local (e.g. LocIDs)</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Id</span></code> - 1-based ids</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Ind</span></code> - 0-based index</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">num</span></code> or <code class="code docutils literal notranslate"><span class="pre">Num</span></code> - number (i.e. numNodes, tNumNodes)</p></li>
+</ul>
+</section>
+<section id="declaring-variables">
+<h3>Declaring Variables<a class="headerlink" href="#declaring-variables" title="Permalink to this headline">¶</a></h3>
+<p>When declaring variables, use the following guidelines:</p>
+<ul class="simple">
+<li><p>Declare and initialize one variable at a time.</p></li>
+</ul>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">aAnInteger</span><span class="p">,</span> <span class="n">anotherInteger</span> <span class="c1">// BAD!</span>
+
+<span class="kt">int</span> <span class="n">aAnInteger</span>                 <span class="c1">// BAD!</span>
+<span class="kt">int</span> <span class="n">aAnotherInteger</span>
+
+<span class="kt">int</span>    <span class="n">aAnInteger</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>        <span class="c1">// GOOD!</span>
+<span class="kt">double</span> <span class="n">aRealNumber</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">aAnInteger</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>            <span class="c1">// GOOD!</span>
+<span class="kt">double</span> <span class="n">aRealNumber</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The characters <code class="code docutils literal notranslate"><span class="pre">*</span></code> and <code class="code docutils literal notranslate"><span class="pre">&amp;</span></code> should be written together with the types of variables instead of with the names of variables in order to emphasize that they are part of the type definition.</p></li>
+</ul>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="o">*</span><span class="n">anInteger</span>    <span class="c1">// BAD!</span>
+<span class="kt">int</span><span class="o">*</span> <span class="n">anIntPointer</span> <span class="c1">// GOOD!</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<p>The following guidelines apply to classes.</p>
+<section id="class-name">
+<h3>Class Name<a class="headerlink" href="#class-name" title="Permalink to this headline">¶</a></h3>
+<p>Class names should always use <a class="reference external" href="https://en.wikipedia.org/wiki/Camel_case">upper camel case</a>, e.g. <code class="code docutils literal notranslate"><span class="pre">MyClass</span></code>. Further, if a class name has more than one word, use upper camel case and <strong>Do Not</strong> separate the names with underscores.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">My_Class_Name</span>  <span class="c1">// BAD!</span>
+<span class="n">MyClassName</span>    <span class="c1">// GOOD!</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<p>The following guidelines apply to functions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Constructors (and destructors) are the exception to this rule since C++ requires all constructor and destructors to have the same name as the class name.</p>
+</div>
+<section id="function-names">
+<h3>Function Names<a class="headerlink" href="#function-names" title="Permalink to this headline">¶</a></h3>
+<p>Class function names should have <a class="reference external" href="https://en.wikipedia.org/wiki/Camel_case">lower camel case</a> names. If a function name includes multiple words, do not separate the names with underscores.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">my_class_function_name</span><span class="p">()</span>   <span class="c1">// BAD!</span>
+<span class="n">myClassFunctionName</span><span class="p">()</span>      <span class="c1">// GOOD!</span>
+</pre></div>
+</div>
+<p><strong>Non-member function names are an exception to this rule.</strong> A non-member function is a function that is not define inside a class, e.g. inline function. Non-member functions should have lower case names, e.g.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Function</span><span class="p">()</span>   <span class="c1">// BAD!</span>
+<span class="n">function</span><span class="p">()</span>   <span class="c1">// GOOD!</span>
+</pre></div>
+</div>
+<p><strong>If the non-member function name has multiple words</strong>, separate each name with an underscore as follows</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">MyFreeFunctionName</span><span class="p">()</span>      <span class="c1">// BAD!</span>
+<span class="n">myFreeFunctionName</span><span class="p">()</span>      <span class="c1">// BAD!</span>
+<span class="n">myfreefunctionname</span><span class="p">()</span>      <span class="c1">// BAD!</span>
+<span class="n">my_Free_Function_Name</span><span class="p">()</span>   <span class="c1">// BAD!</span>
+<span class="n">My_Free_Function_Name</span><span class="p">()</span>   <span class="c1">// BAD!</span>
+
+<span class="n">my_free_function_name</span><span class="p">()</span>   <span class="c1">// GOOD!</span>
+</pre></div>
+</div>
+</section>
+<section id="function-declaration">
+<h3>Function Declaration<a class="headerlink" href="#function-declaration" title="Permalink to this headline">¶</a></h3>
+<p>This guidelines will use the word ‘tab’ when referring to guidelines regarding indentation. Note that 1 ‘tab’ is 4 regular spaces. This preference is part of the group’s <a class="reference external" href="https://www.eclipse.org/">Eclipse development environment</a> preferences (see Importing for details on importing preferences). When declaring a function, use the following guidelines:</p>
+<ul class="simple">
+<li><p>When using <code class="code docutils literal notranslate"><span class="pre">auto</span></code>, the <code class="code docutils literal notranslate"><span class="pre">-&gt;</span></code> operator followed by <code class="code docutils literal notranslate"><span class="pre">declrtype</span></code> should align with the function name.</p></li>
+<li><p>When declaring functions, the leading parenthesis is written on the same line as the function name with no spaces between them.</p></li>
+<li><p>Similarly, the trailing parenthesis is written on the same line as the last argument, if any. If the function has no arguments, then the trailing parenthesis is written in the same line as the function name.</p></li>
+<li><p>Each argument is written on a separate line, in the following order: <code class="code docutils literal notranslate"><span class="pre">argument</span> <span class="pre">type</span></code>, <code class="code docutils literal notranslate"><span class="pre">qualifiers</span></code> (if any, e.g. <code class="code docutils literal notranslate"><span class="pre">const</span></code> or <code class="code docutils literal notranslate"><span class="pre">&amp;</span></code> ), <code class="code docutils literal notranslate"><span class="pre">argument</span> <span class="pre">name</span></code>, <code class="code docutils literal notranslate"><span class="pre">default</span> <span class="pre">values</span></code> (if any).</p></li>
+<li><p>Additionally, if a function has more than one <code class="code docutils literal notranslate"><span class="pre">argument</span></code>, the <code class="code docutils literal notranslate"><span class="pre">types</span></code> are left-aligned, then the <code class="code docutils literal notranslate"><span class="pre">qualifiers</span></code> are left-aligned,and so on.</p></li>
+<li><p>Both leading and trailing braces, i.e. <code class="code docutils literal notranslate"><span class="pre">{}</span></code>, are written in their own lines and align with the function name.</p></li>
+<li><p>Function names are indented with one <code class="code docutils literal notranslate"><span class="pre">tab</span></code>, i.e. four regular spaces.</p></li>
+<li><p>The body of a function is indented with <code class="code docutils literal notranslate"><span class="pre">two</span> <span class="pre">tabs</span></code>, i.e. eight regular spaces.</p></li>
+</ul>
+<p>The following function declaration adheres to these guidelines:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// GOOD!</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">ScalarType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">axpy</span><span class="p">(</span><span class="k">const</span> <span class="n">ScalarType</span><span class="o">&amp;</span> <span class="n">aAlpha</span><span class="p">,</span>
+          <span class="k">const</span> <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;&amp;</span> <span class="n">aInput</span><span class="p">,</span>
+          <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span> <span class="n">ScalarType</span> <span class="o">&gt;&amp;</span> <span class="n">aOutput</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="k">auto</span> <span class="n">tLength</span> <span class="o">=</span> <span class="n">aInput</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">decltype</span><span class="p">(</span><span class="n">tIndex</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">tIndex</span> <span class="o">&lt;</span> <span class="n">tLength</span><span class="p">;</span> <span class="n">tIndex</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+         <span class="n">aOutput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">]</span> <span class="o">+=</span> <span class="n">aAlpha</span> <span class="o">*</span> <span class="n">aInput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// GOOD!</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">ScalarType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">axpy</span>
+<span class="p">(</span><span class="k">const</span> <span class="n">ScalarType</span><span class="o">&amp;</span> <span class="n">aAlpha</span><span class="p">,</span>
+ <span class="k">const</span> <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;&amp;</span> <span class="n">aInput</span><span class="p">,</span>
+ <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;&amp;</span> <span class="n">aOutput</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="k">auto</span> <span class="n">tLength</span> <span class="o">=</span> <span class="n">aInput</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">decltype</span><span class="p">(</span><span class="n">tIndex</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">tIndex</span> <span class="o">&lt;</span> <span class="n">tLength</span><span class="p">;</span> <span class="n">tIndex</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+         <span class="n">aOutput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">]</span> <span class="o">+=</span> <span class="n">aAlpha</span> <span class="o">*</span> <span class="n">aInput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// GOOD!</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">ScalarType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">axpy</span>
+<span class="p">(</span><span class="k">const</span> <span class="n">ScalarType</span>                  <span class="o">&amp;</span> <span class="n">aAlpha</span><span class="p">,</span>
+ <span class="k">const</span> <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;</span>   <span class="o">&amp;</span> <span class="n">aInput</span><span class="p">,</span>
+ <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;</span>         <span class="o">&amp;</span> <span class="n">aOutput</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="k">auto</span> <span class="n">tLength</span> <span class="o">=</span> <span class="n">aInput</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">decltype</span><span class="p">(</span><span class="n">tIndex</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">tIndex</span> <span class="o">&lt;</span> <span class="n">tLength</span><span class="p">;</span> <span class="n">tIndex</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+         <span class="n">aOutput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">]</span> <span class="o">+=</span> <span class="n">aAlpha</span> <span class="o">*</span> <span class="n">aInput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// BAD - HAVING MULTIPLE ARGUMENTS IN ONE LINE!</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">ScalarType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">axpy</span><span class="p">(</span><span class="k">const</span> <span class="n">ScalarType</span> <span class="o">&amp;</span> <span class="n">aAlpha</span><span class="p">,</span> <span class="k">const</span> <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">aInput</span><span class="p">,</span>
+          <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;</span>       <span class="o">&amp;</span> <span class="n">aOutput</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="k">auto</span> <span class="n">tLength</span> <span class="o">=</span> <span class="n">aInput</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">decltype</span><span class="p">(</span><span class="n">tIndex</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">tIndex</span> <span class="o">&lt;</span> <span class="n">tLength</span><span class="p">;</span> <span class="n">tIndex</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+         <span class="n">aOutput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">]</span> <span class="o">+=</span> <span class="n">aAlpha</span> <span class="o">*</span> <span class="n">aInput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// BAD - NON-ALIGNED ARGUMENTS!</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">ScalarType</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">axpy</span><span class="p">(</span><span class="k">const</span> <span class="n">ScalarType</span> <span class="o">&amp;</span> <span class="n">aAlpha</span><span class="p">,</span>
+   <span class="k">const</span> <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">aInput</span><span class="p">,</span>
+      <span class="n">Plato</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">ScalarType</span><span class="o">&gt;</span>       <span class="o">&amp;</span> <span class="n">aOutput</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="k">auto</span> <span class="n">tLength</span> <span class="o">=</span> <span class="n">aInput</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">decltype</span><span class="p">(</span><span class="n">tIndex</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">tIndex</span> <span class="o">&lt;</span> <span class="n">tLength</span><span class="p">;</span> <span class="n">tIndex</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+         <span class="n">aOutput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">]</span> <span class="o">+=</span> <span class="n">aAlpha</span> <span class="o">*</span> <span class="n">aInput</span><span class="p">[</span><span class="n">tIndex</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="other-conventions">
+<h2>Other Conventions<a class="headerlink" href="#other-conventions" title="Permalink to this headline">¶</a></h2>
+<section id="operator-spacing">
+<h3>Operator Spacing<a class="headerlink" href="#operator-spacing" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://www.geeksforgeeks.org/operators-c-c/">C++ operators</a> should be spaced as follows:</p>
+<ul class="simple">
+<li><p>Always use spaces before and after the following operators: =, +, -, *, and all logical operators.</p></li>
+<li><p>Do not use spaces around ‘.’ or ‘-&gt;’, nor between unary operators and operands.</p></li>
+</ul>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">i</span><span class="o">++</span>    <span class="c1">// this is GOOD!</span>
+<span class="n">i</span> <span class="o">++</span>   <span class="c1">// this is BAD!</span>
+
+<span class="n">AFullArray</span><span class="p">.</span><span class="n">AMemberFunction</span>     <span class="c1">// this is GOOD!</span>
+<span class="n">AFullArray</span> <span class="p">.</span> <span class="n">AMemberFunction</span>   <span class="c1">// this is BAD!</span>
+
+<span class="k">this</span><span class="o">-&gt;</span><span class="n">MemberFunction</span>     <span class="c1">// GOOD!</span>
+<span class="k">this</span> <span class="o">-&gt;</span> <span class="n">MemberFunction</span>   <span class="c1">// BAD!</span>
+</pre></div>
+</div>
+</section>
+<section id="switch-statements">
+<h3>Switch Statements<a class="headerlink" href="#switch-statements" title="Permalink to this headline">¶</a></h3>
+<p>A switch statement must always contain a default branch use to handle unexpected cases.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">switch</span> <span class="p">(</span><span class="n">VariableName</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">case</span> <span class="nl">ACASE</span><span class="p">:</span>
+    <span class="p">{</span>
+        <span class="c1">// lines of code</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">case</span> <span class="nl">ANOTHERCASE</span><span class="p">:</span>
+    <span class="p">{</span>
+        <span class="c1">// lines of code</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">default</span><span class="o">:</span> <span class="c1">// this is necessary</span>
+    <span class="p">{</span>
+        <span class="c1">// this is the default case</span>
+    <span class="p">}</span>
+<span class="p">}</span> <span class="c1">// end of switch structure</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><strong>Coding Style</strong></a><ul>
+<li><a class="reference internal" href="#file-names">File Names</a></li>
+<li><a class="reference internal" href="#variables">Variables</a><ul>
+<li><a class="reference internal" href="#naming-variables">Naming Variables</a></li>
+<li><a class="reference internal" href="#prefixes">Prefixes</a></li>
+<li><a class="reference internal" href="#abbreviations">Abbreviations</a></li>
+<li><a class="reference internal" href="#declaring-variables">Declaring Variables</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#classes">Classes</a><ul>
+<li><a class="reference internal" href="#class-name">Class Name</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#function-names">Function Names</a></li>
+<li><a class="reference internal" href="#function-declaration">Function Declaration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-conventions">Other Conventions</a><ul>
+<li><a class="reference internal" href="#operator-spacing">Operator Spacing</a></li>
+<li><a class="reference internal" href="#switch-statements">Switch Statements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="documentation.html"
+                        title="previous chapter"><strong>Documentation For Plato</strong></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="inputdeck.html"
+                        title="next chapter"><strong>Input Deck Reference</strong></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/CodingStyle.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="inputdeck.html" title="Input Deck Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="documentation.html" title="Documentation For Plato"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><strong>Coding Style</strong></a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Plato Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
+    </div>
+  </body>
+</html>

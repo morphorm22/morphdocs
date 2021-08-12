@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Spack Build Instructions &#8212; Plato 0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Things to add" href="todo.html" />
+    <link rel="prev" title="Input Deck Reference" href="inputdeck.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="todo.html" title="Things to add"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="inputdeck.html" title="Input Deck Reference"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><strong>Spack Build Instructions</strong></a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="spack-build-instructions">
+<h1><strong>Spack Build Instructions</strong><a class="headerlink" href="#spack-build-instructions" title="Permalink to this headline">¶</a></h1>
+<p>This section goes over the steps to build <a class="reference external" href="https://github.com/platoengine/">PLATO Engine</a> with <a class="reference external" href="https://github.com/platoengine/platoanalyze/">PLATO Analyze</a> using the <a class="reference external" href="https://spack.io/">Spack</a> package management tool. The instructions have been tested on Ubuntu 18.04 and make use of the apt package manager that ships with Debian derived GNU/Linux distributions.</p>
+<section id="spack-setup">
+<h2>Spack Setup<a class="headerlink" href="#spack-setup" title="Permalink to this headline">¶</a></h2>
+<p>Before beginning the Plato Engine build process, we need to set up Spack. First, install these dependencies if you do not already have them:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install build-essential gfortran git curl python
+</pre></div>
+</div>
+<p>Next, clone the Spack repository specifically tailored to install Plato Engine and checkout the <code class="code docutils literal notranslate"><span class="pre">update</span></code> branch:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/platoengine/spack.git
+<span class="gp">$ </span><span class="nb">cd</span> spack
+<span class="gp">$ </span>git checkout update
+</pre></div>
+</div>
+<p>To use Spack, you first need to set up your environment. Fortunately, Spack provides a script to do this for you. Source this script in your current shell.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span> ~/spack/share/spack/setup-env.sh
+</pre></div>
+</div>
+<p><strong>Hint:</strong> If you are working with multiple spack areas or different spack branches, sometimes spack can find itself in a bad state. We have found the command <code class="code docutils literal notranslate"><span class="pre">spack</span> <span class="pre">clean</span> <span class="pre">-a</span></code> to be very helpful in such situations. If you get spacked, try running this command.</p>
+</section>
+<section id="plato-engine-build-instructions">
+<h2>Plato Engine Build Instructions<a class="headerlink" href="#plato-engine-build-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you only wish to build Plato Engine (without Plato Analyze), proceed with these instructions, otherwise, skip to <a class="reference internal" href="#platoanalyzebuildinstructions"><span class="std std-ref">Plato Analyze Build Instructions</span></a>.</p>
+</div>
+<p>Plato Engine can be installed with the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>spack install platoengine
+</pre></div>
+</div>
+<p>Running this command will install the default configuration of platoengine along with all of its dependencies. <a class="reference internal" href="#platoenginevariants"><span class="std std-numref">Table 8</span></a> shows the spack ‘variants’ for building platoengine.</p>
+<span id="platoenginevariants"></span><table class="colwidths-given docutils align-center" id="id1">
+<caption><span class="caption-number">Table 8 </span><span class="caption-text">‘Variants’ for building platoengine</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variant</p></th>
+<th class="head"><p>Default Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>platomain</p></td>
+<td><p>True</p></td>
+<td><p>Compile PlatoMain</p></td>
+</tr>
+<tr class="row-odd"><td><p>platostatics</p></td>
+<td><p>True</p></td>
+<td><p>Compile PlatoStatics</p></td>
+</tr>
+<tr class="row-even"><td><p>regression</p></td>
+<td><p>True</p></td>
+<td><p>Add regression tests</p></td>
+</tr>
+<tr class="row-odd"><td><p>unit_testing</p></td>
+<td><p>True</p></td>
+<td><p>Add unit testing</p></td>
+</tr>
+<tr class="row-even"><td><p>albany_tests</p></td>
+<td><p>False</p></td>
+<td><p>Configure Albany tests</p></td>
+</tr>
+<tr class="row-odd"><td><p>analyze_tests</p></td>
+<td><p>False</p></td>
+<td><p>Configure Analyze tests</p></td>
+</tr>
+<tr class="row-even"><td><p>cuda</p></td>
+<td><p>False</p></td>
+<td><p>Configure with cuda</p></td>
+</tr>
+<tr class="row-odd"><td><p>esp</p></td>
+<td><p>False</p></td>
+<td><p>Configure with esp</p></td>
+</tr>
+<tr class="row-even"><td><p>expy</p></td>
+<td><p>False</p></td>
+<td><p>Compile exodus/python API</p></td>
+</tr>
+<tr class="row-odd"><td><p>geometry</p></td>
+<td><p>False</p></td>
+<td><p>Turn on Plato Geometry</p></td>
+</tr>
+<tr class="row-even"><td><p>iso</p></td>
+<td><p>False</p></td>
+<td><p>Turn on iso extraction</p></td>
+</tr>
+<tr class="row-odd"><td><p>platoproxy</p></td>
+<td><p>False</p></td>
+<td><p>Compile PlatoProxy</p></td>
+</tr>
+<tr class="row-even"><td><p>prune</p></td>
+<td><p>False</p></td>
+<td><p>Compile turn on use of prune and refine</p></td>
+</tr>
+<tr class="row-odd"><td><p>rol</p></td>
+<td><p>False</p></td>
+<td><p>Turn on use of rol</p></td>
+</tr>
+<tr class="row-even"><td><p>stk</p></td>
+<td><p>False</p></td>
+<td><p>Turn on use of stk</p></td>
+</tr>
+<tr class="row-odd"><td><p>tpetra_tests</p></td>
+<td><p>False</p></td>
+<td><p>Configure Tpetra tests</p></td>
+</tr>
+</tbody>
+</table>
+<p>These can be turned on or off by appending the variant to the spack spec using the <code class="code docutils literal notranslate"><span class="pre">+</span></code> or <code class="code docutils literal notranslate"><span class="pre">~</span></code> operators. For example, platoengine can be built with the ‘rol’ module enabled but without support for unit testing by using</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>spack install platoengine+rol~unit_testing
+</pre></div>
+</div>
+<p>For more details on forming specs, see the <a class="reference external" href="https://spack.readthedocs.io/en/latest/">Spack Documentation</a></p>
+</section>
+<section id="plato-analyze-build-instructions">
+<span id="platoanalyzebuildinstructions"></span><h2>Plato Analyze Build Instructions<a class="headerlink" href="#plato-analyze-build-instructions" title="Permalink to this headline">¶</a></h2>
+<p>To build and run Plato Analyze, you must have a machine with an nVidia GPU with a minimum compute capability of 3.0. To determine the compute capability of your GPU, go to the <a class="reference external" href="https://developer.nvidia.com/cuda-gpus">nVidia website</a>. If you have a GPU that meets the minimum criteria, then you will need to install CUDA version 9.2 or greater.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please ensure that the drivers installed on your system as well as the CUDA version that you are running support the compute capability of your GPU. For more information please see <a class="reference external" href="https://docs.nvidia.com/deploy/cuda-compatibility/index.html">CUDA compatibility</a>.</p>
+</div>
+<p>If both Spack and CUDA are properly installed, you can now begin the build process by installing Plato Analyze and all of it’s dependencies with a single command. In the following command set the <code class="code docutils literal notranslate"><span class="pre">$COMPUTE_CAPABILITY</span></code> flag to the compute capability of your GPU (with no decimal).</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>spack install platoanalyze+cuda ^trilinos <span class="nv">cuda_arch</span><span class="o">=</span><span class="nv">$COMPUTE_CAPABILITY</span> ^amgx <span class="nv">cuda_arch</span><span class="o">=</span><span class="nv">$COMPUTE_CAPABILITY</span>
+</pre></div>
+</div>
+<p>For instance, if you have a Tesla V100 GPU, the compute capability is 7.0. Thus, the <code class="code docutils literal notranslate"><span class="pre">$COMPUTE_CAPABILITY</span></code> flag should be set as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>spack install platoanalyze+cuda ^trilinos <span class="nv">cuda_arch</span><span class="o">=</span><span class="m">70</span> ^amgx <span class="nv">cuda_arch</span><span class="o">=</span><span class="m">70</span>
+</pre></div>
+</div>
+<p><strong>This step can take several hours</strong> since it will install many Plato Engine, Plato Analyze, and all of its dependencies in the spack/opt directory.</p>
+<p><a class="reference internal" href="#platoanalyzevariants"><span class="std std-numref">Table 9</span></a> lists the variants of Plato Analyze</p>
+<span id="platoanalyzevariants"></span><table class="colwidths-given docutils align-center" id="id2">
+<caption><span class="caption-number">Table 9 </span><span class="caption-text">‘Variants’ for Plato Analyze</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variant</p></th>
+<th class="head"><p>Default Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>amgx</p></td>
+<td><p>True</p></td>
+<td><p>Compile with AMGX solver</p></td>
+</tr>
+<tr class="row-odd"><td><p>cuda</p></td>
+<td><p>True</p></td>
+<td><p>Compile with cuda</p></td>
+</tr>
+<tr class="row-even"><td><p>meshmap</p></td>
+<td><p>True</p></td>
+<td><p>Compile with MeshMap capability</p></td>
+</tr>
+<tr class="row-odd"><td><p>mpmd</p></td>
+<td><p>True</p></td>
+<td><p>Compile with mpmd</p></td>
+</tr>
+<tr class="row-even"><td><p>esp</p></td>
+<td><p>False</p></td>
+<td><p>Compile with ESP</p></td>
+</tr>
+<tr class="row-odd"><td><p>geometry</p></td>
+<td><p>False</p></td>
+<td><p>Compile with MLS geometry</p></td>
+</tr>
+<tr class="row-even"><td><p>openmp</p></td>
+<td><p>False</p></td>
+<td><p>Compile with OpenMP for CPU solvers</p></td>
+</tr>
+<tr class="row-odd"><td><p>python</p></td>
+<td><p>False</p></td>
+<td><p>Compile with python</p></td>
+</tr>
+<tr class="row-even"><td><p>rocket</p></td>
+<td><p>False</p></td>
+<td><p>Builds ROCKET and ROCKET_MPMD</p></td>
+</tr>
+<tr class="row-odd"><td><p>tpetra</p></td>
+<td><p>False</p></td>
+<td><p>Compile with Tpetra solvers</p></td>
+</tr>
+</tbody>
+</table>
+<section id="building-for-different-platforms">
+<h3>Building for Different Platforms<a class="headerlink" href="#building-for-different-platforms" title="Permalink to this headline">¶</a></h3>
+<p>The following command will build Plato Analyze for CPU with the Tpetra stack in Trilinos and OpenMP enabled on the CPU.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>spack install platoanalyze~cuda~amgx+openmp+tpetra
+</pre></div>
+</div>
+<p>Alternatively you could disable OpenMP with <code class="code docutils literal notranslate"><span class="pre">~openmp</span></code>, or build with Epetra with <code class="code docutils literal notranslate"><span class="pre">~tpetra</span></code>. We recommend Tpetra with OpenMP for best performance on CPU builds.</p>
+<p>It is also possible to use Tpetra solvers on the GPU. This can be done with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>spack install platoanalyze+cuda~amgx~openmp+tpetra ^trilinos <span class="nv">cuda_arch</span><span class="o">=</span><span class="m">70</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="development-builds">
+<h2>Development Builds<a class="headerlink" href="#development-builds" title="Permalink to this headline">¶</a></h2>
+<p>The Plato team relies on the git submodule feature to reduce large file content from the main source code repository. In order to create a development build of Plato Analyze with regression tests enabled, you need to run the following set of commands from inside you Plato Analyze source directory before creating a development build.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git submodule init
+<span class="gp">$ </span>git submodule update
+</pre></div>
+</div>
+<p>In order to create a development build of platoengine or platoanalyze, rather than using <code class="code docutils literal notranslate"><span class="pre">spack</span> <span class="pre">install</span></code>, simply run <code class="code docutils literal notranslate"><span class="pre">spack</span> <span class="pre">dev-build</span></code> from your source directory. For example, to create a development build of platoanalyze, you can run.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/platoengine/platoanalyze.git
+<span class="gp">$ </span><span class="nb">cd</span> platoanalyze
+<span class="gp">$ </span>spack dev-build platoanalyze+cuda ^trilinos <span class="nv">cuda_arch</span><span class="o">=</span><span class="nv">$COMPUTE_CAPABILITY</span> ^amgx <span class="nv">cuda_arch</span><span class="o">=</span><span class="nv">$COMPUTE_CAPABILITY</span>
+</pre></div>
+</div>
+</section>
+<section id="spack-modules">
+<h2>Spack Modules<a class="headerlink" href="#spack-modules" title="Permalink to this headline">¶</a></h2>
+<p>The next <strong>optional</strong> steps install the dependencies needed to enable the Spack module functionality if your system does not already have environment modules installed.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">spack bootstrap</span>
+<span class="go">source ./spack/share/spack/setup-env.sh</span>
+</pre></div>
+</div>
+</section>
+<section id="testing-plato-engine">
+<h2>Testing Plato Engine<a class="headerlink" href="#testing-plato-engine" title="Permalink to this headline">¶</a></h2>
+<p>To ensure that everything built correctly, from your build directory run the unit tester:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./apps/services/unittest/PlatoMainUnitTester
+</pre></div>
+</div>
+<p>Finally we want to test an example run of the Plato Engine. Before doing so, make sure to load the MPI implementation and version of cmake installed by Spack:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>spack load cmake
+<span class="gp">$ </span>spack load platoanalyze
+<span class="gp">$ </span>spack load platoengine
+<span class="gp">$ </span>spack load openmpi
+</pre></div>
+</div>
+<p>Then change to the 2Load_OC directory and run ctest:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> examples/2Load_OC
+<span class="gp">$ </span>ctest -VV
+</pre></div>
+</div>
+<p>This should go through a full example. At the end you should see “100% tests passed, 0 tests failed out of 1”.</p>
+</section>
+<section id="testing-plato-analyze">
+<h2>Testing Plato Analyze<a class="headerlink" href="#testing-plato-analyze" title="Permalink to this headline">¶</a></h2>
+<p>If you ran</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git submodule init
+<span class="gp">$ </span>git submodule update
+</pre></div>
+</div>
+<p>before running the <code class="code docutils literal notranslate"><span class="pre">spack</span> <span class="pre">dev-build</span></code> command to build platoanalyze, then there should be a <code class="code docutils literal notranslate"><span class="pre">tests</span></code> directory in your build directory. You can run all of the regression and verification tests with the following command.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> tests
+<span class="gp">$ </span>ctest -VV
+</pre></div>
+</div>
+<p>However, if you want to run a specific test, you just need to go inside the specific test directory you want to run and use <code class="code docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">-VV</span></code> command to run the test. For instance:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> tests/regression
+<span class="gp">$ </span><span class="nb">cd</span> AD_Elastic
+<span class="gp">$ </span>ctest -VV
+</pre></div>
+</div>
+<p>This should successfully run the AD_Elastic test.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><strong>Spack Build Instructions</strong></a><ul>
+<li><a class="reference internal" href="#spack-setup">Spack Setup</a></li>
+<li><a class="reference internal" href="#plato-engine-build-instructions">Plato Engine Build Instructions</a></li>
+<li><a class="reference internal" href="#plato-analyze-build-instructions">Plato Analyze Build Instructions</a><ul>
+<li><a class="reference internal" href="#building-for-different-platforms">Building for Different Platforms</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#development-builds">Development Builds</a></li>
+<li><a class="reference internal" href="#spack-modules">Spack Modules</a></li>
+<li><a class="reference internal" href="#testing-plato-engine">Testing Plato Engine</a></li>
+<li><a class="reference internal" href="#testing-plato-analyze">Testing Plato Analyze</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="inputdeck.html"
+                        title="previous chapter"><strong>Input Deck Reference</strong></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="todo.html"
+                        title="next chapter"><strong>Things to add</strong></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/SpackBuildInstructions.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="todo.html" title="Things to add"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="inputdeck.html" title="Input Deck Reference"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Plato 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><strong>Spack Build Instructions</strong></a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Plato Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
+    </div>
+  </body>
+</html>

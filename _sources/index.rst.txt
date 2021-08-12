@@ -29,7 +29,9 @@ Contents
    description
    githubrepositories
    documentation
+   CodingStyle
    inputdeck
+   SpackBuildInstructions
    todo
 
 Indices and tables
