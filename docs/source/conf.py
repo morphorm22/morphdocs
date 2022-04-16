@@ -17,12 +17,12 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Plato'
-copyright = '2021, Plato Team'
-author = 'Plato Team'
+project = 'Morphorm'
+copyright = '2021, Morphorm'
+author = 'Morphorm LLC'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0'
+release = '1.0'
 
 
 # -- General configuration ---------------------------------------------------

@@ -1,5 +1,5 @@
-**Spack Build Instructions**
-============================
+Build Instructions
+==================
 This section goes over the steps to build `PLATO Engine <https://github.com/platoengine/>`_ with `PLATO Analyze <https://github.com/platoengine/platoanalyze/>`_ using the `Spack <https://spack.io/>`_ package management tool. The instructions have been tested on Ubuntu 18.04 and make use of the apt package manager that ships with Debian derived GNU/Linux distributions.
 
 Spack Setup

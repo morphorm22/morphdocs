@@ -1,7 +1,7 @@
-**Coding Style**
+Coding Style
 ================
 
-This section contains all coding style guidelines related to the Plato project. They are organized by Variables, Classes, Functions, Files and Other Conventions.
+This section contains all coding style guidelines related to the Morphorm project. They are organized by Variables, Classes, Functions, Files and Other Conventions.
 
 Special emphasis is given to the cardinal rules:
 
@@ -31,18 +31,18 @@ An exception to the above rule is reserved for matrix data structures, e.g.,
    {C21, C22, C23}, 
    {C31, C32, C33} }; // BAD!
    
-* **All Plato source code shall always be inside the Plato namespace. Any source code associated with a Plato module (Engine, Analyze, Model, and Optimize) is considered Plato source code.**
+* **All Morphorm source code shall always be inside the appropriate Morphorm module (Pareto, Analyze, Optimize, Sample, Model) namespace. Any source code associated with a Morphorm module is considered Morphorm source code.**
 
 .. code-block:: c++
 
-   namespace Plato
+   namespace Pareto
    {
-       class MyPlatoClass
+       class MyParetoClass
        {
            // source code
        };
 
-       inline void my_plato_inline_function()
+       inline void my_pareto_inline_function()
        {
            // source code
        }
@@ -50,7 +50,7 @@ An exception to the above rule is reserved for matrix data structures, e.g.,
    
 File Names
 ----------
-File names shall always begin with Plato\_, follow by an `upper camel case <https://en.wikipedia.org/wiki/Camel_case>`_ name. For instance, the following file name :code:`Plato_MyFileName.hpp` is acceptable.
+File names shall always begin with the Morphorm Module name first, e.g. Pareto\_, follow by an `upper camel case <https://en.wikipedia.org/wiki/Camel_case>`_ name. For instance, the following file name :code:`Pareto_MyFileName.hpp` is acceptable.
 
 Variables
 ---------
@@ -74,7 +74,7 @@ When naming variables, use the following prefixes depending on the type of varia
 
 Abbreviations
 ^^^^^^^^^^^^^
-The following abbreviations are approved in Plato:
+The following abbreviations are approved in Morphorm source code:
 
 * :code:`Glb` - Global (e.g. GlbIDs)
 * :code:`Loc` - Local (e.g. LocIDs)
@@ -178,8 +178,8 @@ The following function declaration adheres to these guidelines:
    // GOOD!
    template<typename ScalarType>
    void axpy(const ScalarType& aAlpha, 
-             const Plato::Vector<ScalarType>& aInput,
-             Plato::Vector< ScalarType >& aOutput)
+             const Pareto::Vector<ScalarType>& aInput,
+             Pareto::Vector< ScalarType >& aOutput)
    {
        const auto tLength = aInput.size();
        for(decltype(tIndex) = 0; tIndex < tLength; tIndex++)
@@ -192,8 +192,8 @@ The following function declaration adheres to these guidelines:
    template<typename ScalarType>
    void axpy
    (const ScalarType& aAlpha, 
-    const Plato::Vector<ScalarType>& aInput,
-    Plato::Vector<ScalarType>& aOutput)
+    const Pareto::Vector<ScalarType>& aInput,
+    Pareto::Vector<ScalarType>& aOutput)
    {
        const auto tLength = aInput.size();
        for(decltype(tIndex) = 0; tIndex < tLength; tIndex++)
@@ -206,8 +206,8 @@ The following function declaration adheres to these guidelines:
    template<typename ScalarType>
    void axpy
    (const ScalarType                  & aAlpha, 
-    const Plato::Vector<ScalarType>   & aInput,
-    Plato::Vector<ScalarType>         & aOutput)
+    const Pareto::Vector<ScalarType>   & aInput,
+    Pareto::Vector<ScalarType>         & aOutput)
    {
        const auto tLength = aInput.size();
        for(decltype(tIndex) = 0; tIndex < tLength; tIndex++)
@@ -218,8 +218,8 @@ The following function declaration adheres to these guidelines:
 
    // BAD - HAVING MULTIPLE ARGUMENTS IN ONE LINE!
    template<typename ScalarType>
-   void axpy(const ScalarType & aAlpha, const Plato::Vector<ScalarType> & aInput,
-             Plato::Vector<ScalarType>       & aOutput)
+   void axpy(const ScalarType & aAlpha, const Pareto::Vector<ScalarType> & aInput,
+             Pareto::Vector<ScalarType>       & aOutput)
    {
        const auto tLength = aInput.size();
        for(decltype(tIndex) = 0; tIndex < tLength; tIndex++)
@@ -231,8 +231,8 @@ The following function declaration adheres to these guidelines:
    // BAD - NON-ALIGNED ARGUMENTS!
    template<typename ScalarType>
    void axpy(const ScalarType & aAlpha, 
-      const Plato::Vector<ScalarType> & aInput,
-         Plato::Vector<ScalarType>       & aOutput)
+      const Pareto::Vector<ScalarType> & aInput,
+         Pareto::Vector<ScalarType>       & aOutput)
    {
        const auto tLength = aInput.size();
        for(decltype(tIndex) = 0; tIndex < tLength; tIndex++)

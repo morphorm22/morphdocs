@@ -1,38 +1,54 @@
-.. Plato documentation master file, created by
+.. Morphorm documentation master file, created by
    sphinx-quickstart on Wed Jul 21 16:27:17 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Plato's documentation!
-=================================
+Welcome to Morphorm's documentation!
+====================================
 
-.. figure:: images/plato_logo_simple.png
-   :figwidth: 400
+.. figure:: images/logo.png
+   :figwidth: 50
    :alt:   alternative text
    :align: center
 
 .. note::
 
-   These pages are a pre-release version. They are under active development.
+   This is a pre-release version of the Morphorm documentation.
 
-These Github pages are meant to serve as the documentation for **Plato Engine** and its associated repositories. These repositories can be found at the `Plato Engine <https://github.com/platoengine/>`_ GitHub account.
+These Github pages are meant to serve as the documentation for **Morphorm** and its associated repositories. These repositories can be found at the `Morphorm <https://github.com/morphorm22>`_ GitHub account.
 
-These pages are built using the `Plato Docs <https://github.com/platoengine/platodocs/>`_ GitHub repository.
+These pages are built using the `Morphorm Docs <https://github.com/morphorm22/morphdocs/>`_ GitHub repository.
 
-
-Contents
---------
+************
+Introduction
+************
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    description
    githubrepositories
    documentation
-   CodingStyle
+
+**********
+Input Deck
+**********
+
+.. toctree::
+   :maxdepth: 3
+
    inputdeck
+
+***************
+Developer Notes 
+***************
+
+.. toctree::
+   :maxdepth: 3
+
+   CodingStyle
    SpackBuildInstructions
-   todo
+
 
 Indices and tables
 ==================

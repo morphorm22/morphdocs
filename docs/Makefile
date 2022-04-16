@@ -6,9 +6,9 @@
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = source
-BUILDDIR      = ../../platodocs-build
+BUILDDIR      = ../../morphform-build
 PDFBUILDDIR   = ../tmp
-PDF           = ../platodocs.pdf
+PDF           = ../morphform.pdf
 
 # Put it first so that "make" without argument is like "make help".
 help:
