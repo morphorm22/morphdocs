@@ -39,6 +39,15 @@ Input Deck
 
    inputdeck
 
+********
+Examples 
+********
+
+.. toctree::
+   :maxdepth: 3
+
+   examples 
+
 ***************
 Developer Notes 
 ***************

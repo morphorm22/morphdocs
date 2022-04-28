@@ -2,10 +2,17 @@
 Description
 ***********
 
-Morphorm developed the **Pareto** software program to facilitate optimization-based digital design engineering. Pareto provides a suite of integrated optimization-based design tools developed to exploit high-performance computing. The Pareto software program includes tools for finite element analysis (**Analyze**), gradient-based and gradient-free optimization (**Optimize**), topology and parametric shape optimization (**Morph**), uncertainty quantification and propagation (**Sample**), and more. Morphorm's suite of software programs are not only designed for high-performance calculations but also for performance portability, enabling optimal use of these software programs across a variety of computer platforms.
+Morphorm developed the **Pareto** software to facilitate optimization-based digital design engineering. 
+Pareto provides a suite of integrated optimization-based design tools developed to exploit high-performance 
+computing. The Pareto software includes tools for finite element analysis (**Analyze**), gradient-based and 
+gradient-free optimization (**Optimize**), topology and parametric shape optimization (**Morph**), 
+uncertainty quantification and propagation (**Sample**), and more. Morphorm's suite of software tools are 
+designed for high-performance calculations and performance portability, enabling optimal use of these 
+digital design engineering tools across a variety of computer platforms.
 
 Application
------------
+###########
+
 Morphorm facilitates optimization-based digital design engineering on high-performance computing platforms. Engineers can apply Morphorm's technologies to find Pareto optimal designs across combined environments while meeting expected reliability and manufacturability requirements.
 
 Approach

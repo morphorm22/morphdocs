@@ -107,7 +107,10 @@ Comments within an input deck can be specified as lines beginning with “//”.
 Service
 *******
 
-This section shows how to define a service block. Each service block begins and ends with the tokens “begin service {string}” and “end service”, respectively. The string following “begin service” specifies an identifier for this service. Other blocks in the input deck will use this identifier to reference the service block. The following is a typical service block definition:
+This section shows how to define a service block. Each service block begins and ends with the tokens
+“begin service {string}” and “end service”, respectively. The string following “begin service” specifies
+an identifier for this service. Other blocks in the input deck will use this identifier to reference the
+service block. The following is a typical service block definition:
 
 .. code-block:: console
    
@@ -161,18 +164,35 @@ already caches the state accordingly. This feature is available in the case the 
 update_problem
 ==============
 
-Each service can specify whether it uses the “update_problem” mechanism during an optimization run. This is done using the format: “update_problem {Boolean}”. 
-Some optimization problems (such as stress-constrained mass minimization) require the physics code to update local state information at certain frequencies. 
-The “update_problem” flag specifies whether the optimizer will call the update operation for this service. Analyze already applies the update problem feature 
-accordingly. This feature is available in the case the user decides to integrate a non-Morphorm simulation code into the Morphorm ecosystem.
+Each service can specify whether it uses the “update_problem” mechanism during an optimization run.
+This is done using the format: “update_problem {Boolean}”. Some optimization problems (such as
+stress-constrained mass minimization) require the physics code to update local state information
+at certain frequencies. The “update_problem” flag specifies whether the optimizer will call the
+update operation for this service. Analyze already applies the update problem feature accordingly.
+This feature is available in the case the user decides to integrate a non-Morphorm simulation code
+into the Morphorm ecosystem.
+
+.. _input_deck_options_service_path_kw:
+
+path
+====
+
+Each service can specify the path to its corresponding executable if needed. This is done
+using the syntax: "path {string}". Normally, this is not required as Morphorm will know
+where to find the executable. This keyword is mostly available for workflow customization.
+For example, if the user wants to call an in-house app that is not part of the
+Morphorm ecosystem during optimization (e.g. design criterion evaluation), the
+:ref:`path <input_deck_options_service_path_kw>` keyword provides a mechanism to inform
+Morphorm where it can find the in-house app executable at runtime.
 
 .. _input_deck_options_criterion_subsec:
 
 Criterion
 *********
 
-This section shows how to define a criterion block. Each criterion block begins and ends with the tokens “begin criterion {integer}” and “end criterion”, 
-respectively. The string following “begin criterion” specifies an identifier for this criterion. Other blocks in the input deck will use this identifier 
+This section shows how to define a criterion block. Each criterion block begins and ends with the tokens
+“begin criterion {integer}” and “end criterion”, respectively. The string following “begin criterion”
+specifies an identifier for this criterion. Other blocks in the input deck will use this identifier
 to reference the criterion. The following is a typical criterion block definition:
 
 .. code-block:: console
@@ -188,7 +208,7 @@ The Morphorm input deck can contain an arbitrary number of criterion blocks. The
 General Parameters
 ==================
 
-The following general parameters are used to define a Morphorm criterion. 
+The following general criterion parameters are used to define a Morphorm :ref:`criterion <input_deck_options_criterion_subsec>` block.
 
 .. _input_deck_options_criterion_general_type_kw:
 
@@ -214,6 +234,9 @@ Each criterion **MUST** have a type specified in the format: “type {string}”
    "volume", "The volume of the current design."
    "mass", "The mass of the current design."
    "flux_p-norm", "Superscript p used to compute the norm of the heat flux."
+   "mean_temperature", "A measure of the fluid mean temperature."
+   "mean_surface_temperature", "A measure of the mean temperature on a surface. This criterion is only available for computational fluid dynamics applications."
+   "mean_surface_pressure", "A measure of the mean pressure on a surface. This criterion is only available for computational fluid dynamics applications."
 
 .. _input_deck_options_criterion_general_ids_kw:
 
@@ -230,6 +253,22 @@ criterion_weights
 
 When defining a composite criterion this parameter defines the weights of each criterion that make up the composite criterion. 
 The syntax for this paramter is: “criterion weights {value}{...}”.
+
+.. _input_deck_options_criterion_general_ltype_kw:
+
+location_type
+-------------
+
+This specifies the type of location (sideset or nodeset). Syntax: "location_type {string}". Currently,
+only sideset can be specified for this parameter.
+
+.. _input_deck_options_criterion_general_lname_kw:
+
+location_name
+-------------
+
+This specifies the name of the location sideset or nodeset (only sidesets are allowed at this time).
+Syntax: "location_name {string}".
 
 .. _input_deck_options_criterion_disp_kws:
 
@@ -271,23 +310,30 @@ measure_magnitude
 
 This specifies whether to return a signed displacement or not. Syntax: "measure_magnitude {Boolean}". 
 If “true” is specified the returned value will be the absolulte value of the displacement. If “false” 
-is specified the signed displacement will be returned
+is specified the signed displacement will be returned.
 
-.. _input_deck_options_criterion_disp_ltype_kw:
+.. _input_deck_options_criterion_target_disp_kw:
 
-location_type
--------------
+target_magnitude
+----------------
 
-This specifies the type of location (sideset or nodeset). Syntax: "location_type {string}". Currently, 
-only sideset can be specified for this parameter.
+This option allows the user to specify a non-zero target for the displacement magnitude. The
+value the criterion returns will be the difference between the actual displacement magnitude
+in the direction specified and the target magnitude specified by the user in that same
+direction. When using this option the :ref:`measure_magnitude <input_deck_options_criterion_disp_mag_kw>`
+option is ignored. Syntax: "target_magnitude {value}".
 
-.. _input_deck_options_criterion_disp_lname_kw:
+.. _input_deck_options_criterion_target_solution_vec_kw:
 
-location_name
--------------
+target_solution_vector
+----------------------
 
-This specifies the name of the location sideset or nodeset (only sidesets are allowed at this time). 
-Syntax: "location_name {string}".
+This option allows the user to specify a desired displacement vector. The criterion will
+return the magnitude of the difference vector between the actual dislpacment vector and the
+target displacement vector. When this option is used :ref:`measure_magnitude <input_deck_options_criterion_disp_mag_kw>`
+and :ref:`displacement_direction <input_deck_options_criterion_disp_dir_kw>` are ignored. Syntax:
+"target_solution_vector {value} {value} {value}", where the 3 values are the components of the
+target displacement vector.
 
 .. _input_deck_options_criterion_mmprop_kws:
 
@@ -310,6 +356,15 @@ in a single problem. The following is a typical criterion block specifying mass 
    end criterion
 
 The allowable parameters that define the **"mass_properties"** criterion are listed next.  
+
+.. _input_deck_options_criterion_mmprop_mass_kw:
+
+mass
+----
+
+This is the mass of the object. Syntax: "mass {value} weight {value}". The value is the
+value you want the final design to have. The weight can be used to prioritize different
+mass properties differently when multiple are specified.
 
 .. _input_deck_options_criterion_mmprop_cgx_kw:
 
@@ -460,10 +515,18 @@ blocks in the input deck will use the identifier to reference the scenario. The 
 The Morphorm input deck can contain an arbitrary number of scenario blocks. The following tokens can be specified in any order 
 within the scenario block.
 
+.. _input_deck_options_scenario_general_kws:
+
+General Parameters
+==================
+
+The following general scenario parameters are used to define a Morphorm
+:ref:`scenario <input_deck_options_scenario_subsec>` block.
+
 .. _input_deck_options_scenario_physics_kw:
 
 physics
-=======
+-------
 
 Each scenario **MUST** define the physics used to simulate and evaluate the performance criteria in the format: “physics {string}”. 
 :numref:`DescriptionOfAvailablePhysics` lists the supported physics and provides a brief description.
@@ -484,14 +547,14 @@ Each scenario **MUST** define the physics used to simulate and evaluate the perf
 .. _input_deck_options_scenario_dims_kw:
 
 dimensions
-==========
+----------
 
 Within each scenario the user **MUST** specify the dimensions of the problem in the format: “dimensions {integer}”. Possible values are 2 and 3.
 
 .. _input_deck_options_scenario_loads_kw:
 
 loads
-=====
+-----
 
 Within each scenario the user **MAY** specify its relevant loads in the format: “loads {integer}{...}”. 
 The integer values are the ids of the load blocks defined in the input deck.
@@ -499,15 +562,23 @@ The integer values are the ids of the load blocks defined in the input deck.
 .. _input_deck_options_scenario_bcs_kw:
 
 boundary_conditions
-===================
+-------------------
 
 Within each scenario the user **MUST** specify its relevant boundary conditions in the format: “boundary_conditions {integer}{...}”. 
 The integer values are the ids of boundary condition blocks defined in the input deck.
 
+.. _input_deck_options_scenario_dbto_kws:
+
+Density-Based Topology Optimization Parameters
+==============================================
+
+The following parameters are particular to density-based topology optimization problems
+and are defined in the Morphorm :ref:`scenario <input_deck_options_scenario_subsec>` block.
+
 .. _input_deck_options_scenario_minersatz_kw:
 
 minimum_ersatz_material_value
-=============================
+-----------------------------
 
 Within each scenario the user **MAY** specify the minimum density value that can exist in the 
 design using the format: “minimum ersatz material value {value}”. This parameter is only applicable 
@@ -516,7 +587,7 @@ when solving density-based topology optimization problems.
 .. _input_deck_options_scenario_tol_kw:
 
 tolerance
-=========
+---------
 
 Within each scenario the user **MAY** specify the tolerance for the linear solver used to solve the 
 linear system of equations using  the format: “tolerance {value}”.
@@ -524,7 +595,7 @@ linear system of equations using  the format: “tolerance {value}”.
 .. _input_deck_options_scenario_pmodel_kw:
 
 material_penalty_model
-======================
+----------------------
 
 Within each scenario the user **MAY** specify the material penalty model to be used in density-based 
 topology optimization problems using the format: “material penalty model {string}”. Valid models are 
@@ -533,12 +604,102 @@ topology optimization problems using the format: “material penalty model {stri
 .. _input_deck_options_scenario_pexp_kw:
 
 material_penalty_exponent
-=========================
+-------------------------
 
 Within each scenario the user **MAY** specify the material penalty exponent to be used in density-based 
 topology optimization problems using the format: “material penalty exponent {value}”. The default value is 3.0.
 
+.. _input_deck_options_scenario_solver_kws:
+
+Linear Solver Parameters
+========================
+
+The following scenario parameters are used to define the linear solver in the Morphorm
+:ref:`scenario <input_deck_options_scenario_subsec>` block. The linear solver is used
+to solve the linear system of equations describing the physical behavior of the system
+being analyzed.
+
+.. _input_deck_options_scenario_max_solver_itr_kw:
+
+linear_solver_max_iterations
+----------------------------
+
+This parameter specifies the maximum number of linear solver iterations taken by the solver.
+The default value is set to 1000. The syntax is: "linear_solver_max_iterations {integer}".
+
+.. _input_deck_options_scenario_solver_type_kw:
+
+linear_solver_type
+------------------
+
 .. _input_deck_options_objective_subsec:
+
+This parameter specifies the type of linear solver used to solve the linear system of
+equations. The supported options in Analyze are `amgx <https://github.com/NVIDIA/AMGX>`_,
+`epetra <https://trilinos.github.io/epetra.html>`_, and `tpetra <https://trilinos.github.io/tpetra.html>`_.
+The default solver for GPU computing is `amgx <https://github.com/NVIDIA/AMGX>`_ while it is set to
+`epetra <https://trilinos.github.io/epetra.html>`_ for CPU computing. The syntax is:
+"linear_solver_type {string}".
+
+.. _input_deck_options_scenario_solver_tol_kw:
+
+linear_solver_tolerance
+-----------------------
+
+This parameter specifies the linear solver convergence tolerance. The linear solver will
+iterate until the stopping tolerance is below this threshold The default value is set to
+:math:`1e^{-8}`. The syntax is: "linear_solver_tolerance {value}".
+
+.. _input_deck_options_scenario_fluids_kws:
+
+Fluid Flow Parameters
+=====================
+
+The following scenario parameters are used to define a fluid flow digital design problem
+in the Morphorm :ref:`scenario <input_deck_options_scenario_subsec>` block.
+
+.. _input_deck_options_scenario_fluids_htransfer_kw:
+
+heat_transfer
+-------------
+
+This parameter specifies the heat transfer mechanism. Supported options are
+`natural <https://en.wikipedia.org/wiki/Natural_convection>`_
+and `forced <https://en.wikipedia.org/wiki/Forced_convection>`_ convection.
+Syntax: "heat_transfer {string}"."
+
+.. _input_deck_options_scenario_fluids_ssitr_kw:
+
+steady_state_iterations
+-----------------------
+
+This parameter specifies the maximum number of iterations the fluid solver can
+take to achieve a steady fluid flow state. Syntax: "steady_state_iterations {integer}".
+The default value is set to 500.
+
+.. _input_deck_options_scenario_fluids_sstol_kw:
+
+steady_state_tolerance
+----------------------
+
+This parameter specifies the minimum tolerance the fluid solver needs to reach to consider
+the solution to be at a steady state. Syntax: "steady_state_tolerance {value}". The default
+value for optimization applications is set to 0.001. Keep in mind that lowering the
+:ref:`steady_state_tolerance <input_deck_options_scenario_fluids_sstol_kw>` will force the
+fluid solver to take more :ref:`iterations <input_deck_options_scenario_fluids_ssitr_kw>` to
+achieve steady state. Therefore, the more iterations the fluid solver takes, the more time
+the optimizer will need to reach an optimized solution since the fluid solver is evoke
+every time a trial design is computed by the optimizer (e.g. every major optimization iteration).
+
+.. _input_deck_options_scenario_fluids_timesf_kw:
+
+time_step_safety_factor
+-----------------------
+
+This parameter specifies a safety factor greater than zero but less than one applied to the
+time step at every :ref:`steady state iteration <input_deck_options_scenario_fluids_ssitr_kw>`
+to guarantee steady state convergence. Syntax: "time_step_safety_factor {value}". The default
+value for the safety factor is set to 0.7.
 
 Objective
 *********
@@ -737,10 +898,10 @@ of the allowable types of loads.
    :widths: 10, 30
    :align: center
 
-   "traction", "Arbitray direction traction load on a surface. Specify traction component values separated by spaces (e.g. 0.2 2e-3 200 in three dimensions)."
-   "pressure", "Surface load normal to the surface. Specified by a single scalar value."
-   "uniform_surface_flux", "Thermal surface load. Single value specifying the normal flux to the surface."
-
+   "traction", "Arbitray direction traction load on a surface. Specify traction component values separated by spaces (e.g. 0.2 2e-3 200 in three dimensions). The :ref:`location_name <input_deck_options_load_lname_kw>` parameter must be used to specify the application surface."
+   "pressure", "Surface load normal to the surface. Specified by a single scalar value. The :ref:`location_name <input_deck_options_load_lname_kw>` parameter must be used to specify the application surface."
+   "uniform_surface_flux", "Thermal surface load. Single value specifying the normal flux to the surface. The :ref:`location_name <input_deck_options_load_lname_kw>` parameter must be used to specify the application surface."
+   "uniform_thermal_source", "Single value uniform thermal source. This load is applied to an element block. The :ref:`location_name <input_deck_options_load_lname_kw>` parameter must be used to specify the element block."
 
 .. _input_deck_options_load_ltype_kw:
 
@@ -812,22 +973,36 @@ location_name
 =============
 
 Each boundary condition **MUST** specify a application location. The syntax for specifying the application location is: 
-“location_name {string}”. 
+“location_name {string}”.
+
+.. _DescriptionOfSupportedDofs:
+
+.. csv-table:: Description of supported degrees of freedom
+   :header: "Load Type", "Description"
+   :widths: 10, 30
+   :align: center
+
+   "temp", "temperature"
+   "press", "pressure"
+   "dispx", "displacement in the x direction"
+   "dispy", "displacement in the y direction"
+   "dispz", "displacement in the z direction"
 
 .. _input_deck_options_bc_dof_kw:
 
 degree_of_freedom
 =================
 
-Depending on the boundary condition type you **MAY** need to specify a degree of freedom. The syntax is: 
-“degree_of_freedom {string}{...}”. Possible values for degrees of freedom are “temp” (temperature), “dispx” 
-(displacement in the x direction), “dispy” (displacement in the y direction), and “dispz” (displacement in 
-the z direction). Multiple degrees of freedom can be specified in a single “fixed_value” boundary condition 
-by listing the degrees of freedom separated by spaces. For example, you can specify a fixed value boundary 
-condition for all 3 displacement directions with the following: “degree_of_freedom dispx dispy dispz”. If 
-you specify more than one degree of freedom in this way you must also have the same number or corresponding 
-values in the “value” line. For this example, the “value” line would need to be: “value 0 0 0” for a fixed 
-value of 0.0 in all 3 directions.
+Depending on the boundary condition type you **MAY** need to specify a degree of freedom.
+The syntax is: "degree_of_freedom {string}{...}". :numref:`DescriptionOfSupportedDofs` list
+the supported degrees of freedom. Multiple degrees of freedom can be specified in a single
+"fixed_value" boundary condition by listing the degrees of freedom separated by spaces. For
+example, in a three-dimensional problem, you can specify a fixed value boundary condition
+for all three displacement directions with the following: "degree_of_freedom dispx dispy dispz".
+If you specify more than one degree of freedom in this way you must also have the same number
+or corresponding values in the :ref:`value <input_deck_options_bc_value_kw>` line. For this
+example, the "value" line would need to be: "value 0 0 0" for a fixed value of 0.0 in all
+three directions.
 
 .. _input_deck_options_bc_value_kw:
 
@@ -841,10 +1016,15 @@ Each boundary condition can specify a value using the syntax: “value {value}{.
 Block
 *****
 
-This section shows how to define an element block in the input deck. Each **block** block begins and ends with 
-the tokens “begin block {integer}” and “end block”, respectively. The string following “begin block” specifies 
-an identifier for this “block”. Other blocks in the input deck will use this value to reference the **block** 
-block. The following is a typical **block** definition:
+This section shows how to define an element block in the input deck. Each
+:ref:`block <input_deck_options_block_subsec>` block begins and ends with
+the tokens "begin block {integer}" and "end block", respectively.
+The string following “begin block” specifies an identifier for this
+:ref:`block <input_deck_options_block_subsec>`. Other blocks in the input
+deck will use this value to reference the :ref:`block <input_deck_options_block_subsec>`
+block. The following is a typical :ref:`block <input_deck_options_block_subsec>`
+definition:
+
 
 .. code-block:: console
    
@@ -853,7 +1033,8 @@ block. The following is a typical **block** definition:
       element_type tet4
    end block
 
-The following tokens can be specified in any order within the **block** block.
+The following tokens can be specified in any order within the
+:ref:`block <input_deck_options_block_subsec>` block.
 
 .. _input_deck_options_block_material_kw:
 
@@ -880,6 +1061,29 @@ Each block **MAY** specify the element type using the format: “element type {s
    "tet4", "First-order tet element."
    "hex8", "First-order hex element."
    "tet10", "Second-order tet element."
+
+sub_block
+=========
+
+.. _input_deck_options_block_subblock_kw:
+
+A region of a block can be used to define a sub-block. This can be useful for shape
+optimization workflows, which currently only support a single element block. This
+capability requires that exactly two blocks are defined in the input deck. The sub-block
+is created from block 1 and used to define block 2. A bounding box defines the sub-block
+with coordinates xmin ymin zmin xmax ymax zmax. The syntax is : “sub_block {value} {...}”.
+The following shows a sub-block example:
+
+.. code-block:: console
+
+   begin block 1
+     material 1
+     sub_block xmin ymin zmin xmax ymax zmax
+   end block
+   
+   begin block 2
+     material 1
+   end block
 
 .. _input_deck_options_material_subsec:
 
@@ -921,19 +1125,25 @@ Each material **MUST** specify a material model using the format: “material_mo
    "orthotropic_linear_elastic", "`Orthotropic linear elastic material <https://en.wikipedia.org/wiki/Orthotropic_material>`_"
    "isotropic_linear_thermal", "Assumes homogeneous `thermal conductivity <https://en.wikipedia.org/wiki/Thermal_conductivity>`_ in the body"
    "isotropic_linear_thermoelastic", "Assumes homogeneous thermal and mechanical material properties in the body"
+   "laminar_flow", "Assumes homogeneous incompressible fluid flow properties in the body"
+   "forced_convection", "Assumes homogeneous fluid flow and thermal properties in the body"
+   "natural_convection", "Assumes homogeneous fluid flow and thermal properties in the body"
+
+The next subsections described the supported parameters for each supported material model,
+see :numref:`DescriptionOfSupportedMaterialModels`.
 
  
 .. _input_deck_options_material_isoelastic_kws:
 
-Isotropic Linear Elastic Properties
-===================================
+Isotropic Linear Elastic Model
+------------------------------
 
 The following tokens **MUST** be defined if the "material_model" keyword is set to "isotropic_linear_elastic".
 
 .. _input_deck_options_material_isoelastic_youngs_kw:
 
 youngs_modulus
---------------
+^^^^^^^^^^^^^^
 
 The `Young's modulus <https://en.wikipedia.org/wiki/Young%27s_modulus>`_ is a mechanical property that measures 
 the tensile or compressive stiffness of a solid material. Syntax: “youngs_modulus {value}”.
@@ -941,7 +1151,7 @@ the tensile or compressive stiffness of a solid material. Syntax: “youngs_modu
 .. _input_deck_options_material_isoelastic_poisson_kw:
 
 poissons_ratio
--------------- 
+^^^^^^^^^^^^^^
 
 The `Poisson's ration <https://en.wikipedia.org/wiki/Poisson%27s_ratio>`_ measures the deformation (expansion or contraction) 
 of a material in directions perpendicular to the specific direction of loading. Syntax: “poissons_ratio {value}”.
@@ -949,7 +1159,7 @@ of a material in directions perpendicular to the specific direction of loading. 
 .. _input_deck_options_material_isoelastic_density_kw:
 
 mass_density
-------------
+^^^^^^^^^^^^
 
 The `density <https://en.wikipedia.org/wiki/Density>`_ of a material measures its mass per unit volume. 
 A density value is only needed when modeling inertial forces (e.g. dynamic problems). Syntax: 
@@ -957,15 +1167,15 @@ A density value is only needed when modeling inertial forces (e.g. dynamic probl
 
 .. _input_deck_options_material_orthoelastic_kws:
 
-Orthotropic Linear Elastic Properties
-=====================================
+Orthotropic Linear Elastic Model
+--------------------------------
 
 The following tokens **MUST** be defined if the "material_model" keyword is set to "orthotropic_linear_elastic".
 
 .. _input_deck_options_material_orthoelastic_ymx_kw:
 
-young_modulus_x
----------------
+youngs_modulus_x
+^^^^^^^^^^^^^^^^
 
 Mechanical property that measures the tensile or compressive stiffness of a solid material along the X direction.
 Syntax: “youngs_modulus_x {value}”.
@@ -973,7 +1183,7 @@ Syntax: “youngs_modulus_x {value}”.
 .. _input_deck_options_material_orthoelastic_ymy_kw:
 
 youngs_modulus_y
-----------------
+^^^^^^^^^^^^^^^^
 
 Mechanical property that measures the tensile or compressive stiffness of a solid material along the Y direction. 
 Syntax: “youngs_modulus_y {value}”.
@@ -981,7 +1191,7 @@ Syntax: “youngs_modulus_y {value}”.
 .. _input_deck_options_material_orthoelastic_ymz_kw:
 
 youngs_modulus_z
-----------------
+^^^^^^^^^^^^^^^^
 
 Mechanical property that measures the tensile or compressive stiffness of a solid material along the Z direction. 
 Syntax: “youngs modulus z {value}”.
@@ -989,7 +1199,7 @@ Syntax: “youngs modulus z {value}”.
 .. _input_deck_options_material_orthoelastic_pxy_kw:
 
 poissons_ratio_xy
------------------
+^^^^^^^^^^^^^^^^^
 
 Measures the contraction in direction Y when an extension is applied in direction X. 
 Syntax: “poissons_ratio_xy {value}”.
@@ -997,7 +1207,7 @@ Syntax: “poissons_ratio_xy {value}”.
 .. _input_deck_options_material_orthoelastic_pxz_kw:
 
 poissons_ratio_xz 
------------------
+^^^^^^^^^^^^^^^^^
 
 Measures the contraction in direction Z when an extension is applied in direction X. 
 Syntax: “poissons_ratio_xz {value}”.
@@ -1005,7 +1215,7 @@ Syntax: “poissons_ratio_xz {value}”.
 .. _input_deck_options_material_orthoelastic_pyz_kw:
 
 poissons_ratio_yz
------------------
+^^^^^^^^^^^^^^^^^
 
 Measures the contraction in direction Z when an extension is applied in direction Y. 
 Syntax: “poissons_ratio_yz {value}”.
@@ -1013,7 +1223,7 @@ Syntax: “poissons_ratio_yz {value}”.
 .. _input_deck_options_material_orthoelastic_smxy_kw:
 
 shear_modulus_xy
-----------------
+^^^^^^^^^^^^^^^^
 
 Measures the shear modulus in direction Y on the plane whose normal is in direction X.
 Syntax: “shear_modulus_xy {value}”. The `shear modulus <https://en.wikipedia.org/wiki/Shear_modulus>`_ 
@@ -1023,7 +1233,7 @@ to the shear strain.
 .. _input_deck_options_material_orthoelastic_smxz_kw:
 
 shear_modulus_xz
-----------------
+^^^^^^^^^^^^^^^^
 
 Measures the shear modulus in direction Z on the plane whose normal is in direction X.
 Syntax: “shear_modulus_xz {value}”.
@@ -1031,7 +1241,7 @@ Syntax: “shear_modulus_xz {value}”.
 .. _input_deck_options_material_orthoelastic_smyz_kw:
 
 shear_modulus_yz
-----------------
+^^^^^^^^^^^^^^^^
 
 Measures the shear modulus in direction Z on the plane whose normal is in direction Y.
 Syntax: “shear_modulus_yz {value}”.
@@ -1039,29 +1249,29 @@ Syntax: “shear_modulus_yz {value}”.
 .. _input_deck_options_material_orthoelastic_density_kw:
 
 mass_density
------------- 
+^^^^^^^^^^^^
 
 Measures the mass per unit volume. Syntax: A density value is only when modeling inertial 
 forces (e.g. dynamic problems). Syntax: “mass_density {value}”.
 
 .. _input_deck_options_material_isothermal_kws:
 
-Isotropic Linear Thermal Properties
-===================================
+Isotropic Linear Thermal Model
+------------------------------
 
 The following tokens **MUST** be defined if the “material_model” keyword is set to “isotropic_linear_thermal”.
 
 .. _input_deck_options_material_isothermal_conductivity_kw:
 
 thermal_conductivity
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 Measures the ability of a material to conduct heat. Syntax: “thermal_conductivity {value}”.
 
 .. _input_deck_options_material_isothermal_density_kw:
 
 mass_density
-------------
+^^^^^^^^^^^^
 
 Measures the mass per unit volume. A density value is only needed when modeling inertial 
 forces (e.g. dynamic problems). Syntax: “mass_density {value}”.
@@ -1069,7 +1279,7 @@ forces (e.g. dynamic problems). Syntax: “mass_density {value}”.
 .. _input_deck_options_material_isothermal_sheat_kw:
 
 specific_heat
--------------
+^^^^^^^^^^^^^
 
 The `specific heat capacity <https://en.wikipedia.org/wiki/Specific_heat_capacity>`_ at constant 
 pressure is the heat capacity of a sample of the substance divided by the mass of the sample. 
@@ -1078,36 +1288,36 @@ Syntax: “specific_heat {value}”.
 
 .. _input_deck_options_material_isothermoelastic_kws:
 
-Isotropic Linear Thermoelastic Properties
-=========================================
+Isotropic Linear Thermoelastic Model
+------------------------------------
 
 The following tokens **MUST** be defined if the “material_model” keyword is set to “isotropic_linear_thermoelastic”.
 
 .. _input_deck_options_material_isothermoelastic_conductivity_kw:
 
 thermal_conductivity 
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 See parameter definition :ref:`here <input_deck_options_material_isothermal_conductivity_kw>`. Syntax: “thermal_conductivity {value}”.
 
 .. _input_deck_options_material_isothermoelastic_ym_kw:
 
 youngs_modulus
---------------
+^^^^^^^^^^^^^^
 
 See parameter definition :ref:`here <input_deck_options_material_isoelastic_youngs_kw>`. Syntax: “youngs_modulus {value}”.
 
 .. _input_deck_options_material_isothermoelastic_pr_kw:
 
 poissons_ratio 
---------------
+^^^^^^^^^^^^^^
 
 See parameter definition :ref:`here <input_deck_options_material_isoelastic_poisson_kw>`. Syntax: “poissons_ratio {value}”.
 
 .. _input_deck_options_material_isothermoelastic_texp_kw:
 
 thermal_expansivity
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 The the coefficient of thermal expansion measures how the size of an object changes with a change in temperature. 
 Syntax: “thermal_expansivity {value}”.
@@ -1115,18 +1325,245 @@ Syntax: “thermal_expansivity {value}”.
 .. _input_deck_options_material_isothermoelastic_tempdiff_kw:
 
 temperature_difference
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 
-The `temperature difference <>_` is a measure of the difference between the surface temperature and the 
-quiescent temperature (fluid temperature far from the surface of the object). Syntax: “temperature_difference {value}”.
+The :ref:`temperature difference <input_deck_options_material_isothermoelastic_tempdiff_kw>` is a measure
+of the difference between the surface temperature and the quiescent temperature (fluid temperature far
+from the surface of the object). Syntax: “temperature_difference {value}”.
 
 .. _input_deck_options_material_isothermoelastic_density_kw:
 
 mass_density
-------------
-
+^^^^^^^^^^^^
 
 See parameter definition :ref:`here <input_deck_options_material_isothermal_density_kw>`. Syntax: “mass_density {value}”.
+
+.. _input_deck_options_material_laminarflow_kws:
+
+Laminar Flow Model
+------------------
+
+The "laminar_flow" model is used for incompressible fluid dynamics use cases.
+The following parameters define the laminar flow model.
+
+.. _input_deck_options_material_laminarflow_darcy_kw:
+
+darcy_number
+^^^^^^^^^^^^
+
+The Darcy number is a measure of the material permeability, where permeaility is the ability
+of a porous material to allow fluid to pass through it. The Darcy number thus represents
+the relative effect of the permeability of the medium versus its cross-sectional area. This
+parameter is defined only for density-based topology optimization problems. Syntax:
+"darcy_number {value}".
+
+.. _input_deck_options_material_laminarflow_re_kw:
+
+reynolds_number
+^^^^^^^^^^^^^^^
+
+The `Reynolds number <https://en.wikipedia.org/wiki/Reynolds_number>`_ is the ratio of inertial
+forces to viscous forces within a fluid which is subjected to relative internal movement due to
+distinct fluid velocities. Syntax: "reynolds_number {value}".
+
+.. _input_deck_options_material_laminarflow_impermeability_kw:
+
+impermeability_number
+^^^^^^^^^^^^^^^^^^^^^
+
+Impermeability is defined as the property of a material that it cannot be pervaded by water
+or other liquids. This parameter is defined only for density-based topology optimization
+problems. Syntax: "impermeability_number {value}". The impermeability number :math:`\kappa`
+is computed as :math:`\kappa(Re;Da) = 1/(Re*Da)`, where :math:`Re` and :math:`Da` denote the
+Reynolds and Darcy numbers, respectively. If the user defines the
+:ref:`impermeability_number <input_deck_options_material_laminarflow_impermeability_kw>`
+in the input deck, Morphorm will use this value for the impermeability number instead of
+using :math:`\kappa(Re,Da) = 1/(Re*Da)` to calculate the impermeability number at runtime.
+
+.. _input_deck_options_material_fconvec_kws:
+
+Forced Convection Model
+-----------------------
+
+The "forced_convection" model is used to model heat transfer mechanisms in a fluid governed
+by forced convection. The following parameters define the forced convection model.
+
+.. _input_deck_options_material_fconvec_darcy_kw:
+
+darcy_number
+^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_laminarflow_darcy_kw>`.
+
+.. _input_deck_options_material_fconvec_re_kw:
+
+reynolds_number
+^^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_laminarflow_re_kw>`.
+
+.. _input_deck_options_material_fconvec_pr_kw:
+
+prandtl_number
+^^^^^^^^^^^^^^
+
+The Prandtl number is a dimensionless number defined as the ratio of momentum diffusivity to thermal diffusivity.
+Syntax: "prandtl_number {value}".
+
+.. _input_deck_options_material_fconvec_tdiff_kw:
+
+thermal_diffusivity
+^^^^^^^^^^^^^^^^^^^
+
+The thermal diffusivity parameter measures the rate of transfer of heat of a material from the hot end to the cold end.
+Syntax: "thermal_diffusivity {value}".
+
+.. _input_deck_options_material_fconvec_kvisc_kw:
+
+kinematic_viscocity
+^^^^^^^^^^^^^^^^^^^
+
+The kinetmatic viscocity parameter measures the ratio of the dynamic viscosity over the density of the fluid.
+Syntax: "kinematic_viscocity {value}".
+
+.. _input_deck_options_material_fconvec_tconduc_kw:
+
+thermal_conductivity
+^^^^^^^^^^^^^^^^^^^^
+
+The thermal conductivity parameter masures the ability of a material to conduct heat, where thermal conduction
+is the transfer of internal energy within a body. Syntax: "thermal_conductivity {value}".
+
+.. _input_deck_options_material_fconvec_clength_kw:
+
+characteristic_length
+^^^^^^^^^^^^^^^^^^^^^
+
+The characteristic length defines the scale of a physical system. The characteristic length is
+usually required by the construction of a dimensionless quantity, in the general framework of
+dimensional analysis. Syntax: "characteristic_length {value}".
+
+.. _input_deck_options_material_fconvec_tempdiff_kw:
+
+temperature_difference
+^^^^^^^^^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_isothermoelastic_tempdiff_kw>`.
+
+**Note**. The user **MUST** set the :ref:`characteristic_length <input_deck_options_material_fconvec_clength_kw>`,
+:ref:`thermal_conductivity <input_deck_options_material_fconvec_tconduc_kw>`, and
+:ref:`temperature_difference <input_deck_options_material_fconvec_tempdiff_kw>`
+parameters only if a thermal source is applied. Likewise, the
+:ref:`kinematic_viscocity <input_deck_options_material_fconvec_kvisc_kw>` and
+:ref:`thermal_diffusivity <input_deck_options_material_fconvec_tdiff_kw>` are only set
+if the user prefers to use a material-aware critical time step for the fluid solver.
+
+.. _input_deck_options_material_nconvec_kws:
+
+Natural Convection Model
+------------------------
+
+The "natural_convection" model is used to model heat transfer mechanisms in a fluid governed
+by natural convection. The following parameters define the natural convection model.
+
+.. _input_deck_options_material_nconvec_darcy_kw:
+
+darcy_number
+^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_laminarflow_darcy_kw>`.
+
+.. _input_deck_options_material_nconvec_re_kw:
+
+reynolds_number
+^^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_laminarflow_re_kw>`.
+
+.. _input_deck_options_material_nconvec_pr_kw:
+
+prandtl_number
+^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_fconvec_pr_kw>`.
+
+.. _input_deck_options_material_nconvec_gr_kw:
+
+grashof_number
+^^^^^^^^^^^^^^
+
+The Grashof number is a dimensionless parameter approximating the ratio of the buoyancy to viscous
+force acting on a fluid. Syntax: "grashof_number {value} {...}".
+
+.. _input_deck_options_material_nconvec_rayleigh_kw:
+
+rayleigh_number
+^^^^^^^^^^^^^^^
+
+The Rayleigh number is a dimensionless parameter defining the product of the Grashof number, which
+describes the relationship between buoyancy and viscosity within a fluid, and the Prandtl number,
+which describes the relationship between momentum diffusivity and thermal diffusivity. Syntax:
+"rayleigh_number {value} {...}".
+
+.. _input_deck_options_material_nconvec_richardson_kw:
+
+richardson_number
+^^^^^^^^^^^^^^^^^
+
+The Richardson number is a dimensionless parameter expressing the ratio of the buoyancy term
+to the flow shear term. Syntax: "richardson_number {value} {...}".
+
+.. _input_deck_options_material_nconvec_tdiff_kw:
+
+thermal_diffusivity
+^^^^^^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_fconvec_tdiff_kw>`.
+
+.. _input_deck_options_material_nconvec_kvisc_kw:
+
+kinematic_viscocity
+^^^^^^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_fconvec_kvisc_kw>`.
+
+.. _input_deck_options_material_nconvec_tconduc_kw:
+
+thermal_conductivity
+^^^^^^^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_fconvec_tconduc_kw>`.
+
+.. _input_deck_options_material_nconvec_clength_kw:
+
+characteristic_length
+^^^^^^^^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_fconvec_clength_kw>`.
+
+.. _input_deck_options_material_nconvec_tempdiff_kw:
+
+temperature_difference
+^^^^^^^^^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_isothermoelastic_tempdiff_kw>`.
+
+.. _input_deck_options_material_nconvec_impermeability_kw:
+
+impermeability_number
+^^^^^^^^^^^^^^^^^^^^^
+
+See parameter definition and supported syntax :ref:`here <input_deck_options_material_laminarflow_impermeability_kw>`.
+
+**Note**. Only one out of the following three parameters:
+:ref:`Rayleigh Number <input_deck_options_material_nconvec_rayleigh_kw>`,
+:ref:`Richardson Number <input_deck_options_material_nconvec_richardson_kw>`, and
+:ref:`Grashof Number <input_deck_options_material_nconvec_gr_kw>` needs to be
+defined to run a digital fluid flow design problem governed by natural convection.
+As in forced convection problems, the
+:ref:`kinematic_viscocity <input_deck_options_material_fconvec_kvisc_kw>` and
+:ref:`thermal_diffusivity <input_deck_options_material_fconvec_tdiff_kw>` are only set
+if the user prefers to use a material-aware critical time step for the fluid solver.
 
 .. _input_deck_options_method_subsec:
 
@@ -1155,7 +1592,7 @@ The following tokens can be specified in any order within the method block.
 General Parameters
 ==================
 
-The following general parameters are used to define a Morphorm method block.
+The following general method parameters are used to define a Morphorm :ref:`method <input_deck_options_method_subsec>` block.
 
 .. _input_deck_options_method_general_opttype_kw:
 
@@ -1163,7 +1600,8 @@ optimization_type
 -----------------
 
 This parameter specifies the type of optimization approach used for a geometry optimization 
-problem. The syntax is: “optimization_type {string}” and valid options are “topology” and “shape”.
+problem. The syntax is: “optimization_type {string}” and valid options are “topology”, “shape”,
+and "dakota".
 
 .. _input_deck_options_method_general_algo_kw:
 
@@ -1356,10 +1794,17 @@ The following is a list of the Supported filter types:
 * "helmholtz"
 * “identity”
 * “kernel”
-* “kernel then heaviside”
-* “kernel then tanh”
 
-The syntax is: “filter_type {string}”
+The syntax is: “filter_type {string}”.
+
+.. _input_deck_options_method_filter_ptype_kw:
+
+projection_type
+---------------
+
+This parameter specifies what type of projection method will be used to try to force density
+values to zero and one. The syntax is: "projection_type {string}". Valid projection types
+are "tanh" and "heaviside".
 
 .. _input_deck_options_method_filter_heavisidemin_kw:
 
@@ -1543,6 +1988,50 @@ This parameter specifies the number of processors to use in the prune and refine
 syntax is: “number_prune_and_refine_processors {integer}”.
 
 
+.. _input_deck_options_method_symm_kws:
+
+Symmetry Enforcement Parameters
+===============================
+
+The following parameters are used to enable the symmetry enforcement algorithm, which
+instructs the optimizer to produce symmetric designs with respect to a defined symmetry
+plane.
+
+.. _input_deck_options_method_symm_planeorigin_kw:
+
+symmetry_plane_origin
+---------------------
+
+This parameter specifies the origin of the plane about which symmetry will be enforced
+during a topology optimization run. The syntax is: "symmetry_plane_origin {value} {value}
+{value}". The three values are the three components of the plane origin.
+
+.. _input_deck_options_method_symm_planenormal_kw:
+
+symmetry_plane_normal
+---------------------
+
+This parameter specifies the normal of the plane about which symmetry will be enforced
+during a topology optimization run. The syntax is: "symmetry_plane_normal {value} {value}
+{value}". The three values are the three components of the plane normal.
+
+.. _input_deck_options_method_symm_filterrad_kw:
+
+mesh_map_filter_radius
+----------------------
+
+This parameter specifies the radius of the filter when filtering is performed in the
+Analyze service. The syntax is: "mesh_map_filter_radius {value}".
+
+.. _input_deck_options_method_symm_filterenforcementflag_kw:
+
+filter_before_symmetry_enforcement
+----------------------------------
+
+This parameter specifies whether or not to filter before symmetry enforcement in Analyze.
+The syntax is: "filter_before_symmetry_enforcement {Boolean}".
+
+
 .. _input_deck_options_method_shapeopt_kws:
 
 Shape Optimization Parameters
@@ -1666,6 +2155,149 @@ is utilized when combining the density kernel filter with
 The syntax is: “problem_update_frequency {integer}”.
 
 
+.. _input_deck_options_method_dakota_kws:
+
+Dakota Optimizers
+=================
+
+The `Dakota software package <https://dakota.sandia.gov/>`_ is integrated with the Morphorm
+ecosystem, allowing Morphorm users to leverage the Morphorm MPMD Engine to parallelize digital
+design engineering workflows using Dakota algorithms in conjunction with Morphorm technologies.
+Although the Morphorm ecosystem can access all the algorithms implemented in Dakota, only a
+handful of these have been exposed to users to this date. The Morphorm team will continue to
+expose more Dakota technologies in future releases.
+
+The subsequent sections describe the parameters Morphorm users need to set to use the supported
+Dakota algorithms in Morphorm. If the user wants to access an unsupported Dakota algorithm,
+please contact help@morphorm.com. The Morphorm team welcomes the opportunity to work with you
+to expose and support the Dakota algorithm of interests through our Morphorm ecosystem.
+
+.. _input_deck_options_method_dakota_general_kws:
+
+General Parameters
+------------------
+
+The following general parameters are used to set the inputs for a supported Dakota algorithm.
+
+optimization_type
+^^^^^^^^^^^^^^^^^
+
+The :ref:`optimization_type <input_deck_options_method_general_opttype_kw>` keyword **MUST** be set
+to "dakota" when using a supported dakota workflow. See parameter definition and supported syntax
+:ref:`here <input_deck_options_method_general_opttype_kw>`.
+
+.. _input_deck_options_method_dakota_workflow_kw:
+
+dakota_workflow
+^^^^^^^^^^^^^^^
+
+This parameter is used to set a supported dakota workflow. Supported options are "sbgo" and "mdps".
+The user **MUST** define this parameter. The syntax is: "dakota_workflow {string}".
+
+.. _input_deck_options_method_dakota_conceval_kw:
+
+concurrent_evaluations
+^^^^^^^^^^^^^^^^^^^^^^
+
+Number of concurrent simulations/evaluations orchestrated by Morphorm Engine at runtime.
+The user **MUST** define this parameter. The syntax is: "concurrent_evaluations {integer}".
+
+.. _input_deck_options_method_dakota_sbgo_kws:
+
+Surrogate-Based Global Optimizer
+--------------------------------
+
+The following parameters are used to set the Surrogate-Based Global Optimization (SBGO) algorithm.
+The :ref:`dakota_workflow <input_deck_options_method_dakota_workflow_kw>` keyword **MUST** be
+set to "sbgo" to be able to use the SBGO optimizer.
+
+.. _input_deck_options_method_dakota_sbgo_numsamples_kw:
+
+num_sampling_method_samples
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Number of samples for the sampling algorithm. This samples are used to generate new
+high-fidelity data in the data pool. The updated data pool is later used to recreate
+the surrogates and improve their predictive efficacy. The default is set to 15.
+The syntax is: "num_sampling_method_samples {integer}".
+
+.. _input_deck_options_method_dakota_sbgo_maxitr_kw:
+
+sbgo_max_iterations
+^^^^^^^^^^^^^^^^^^^
+
+Maximum number of iterations for the Surrogate-Based Global Optimizer. The default
+is set to 10. The syntax is: "sbgo_max_iterations {integer}".
+
+.. _input_deck_options_method_dakota_sbgo_outname_kw:
+
+sbgo_surrogate_output_name
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+File name for writing surrogate model files. If this parameter is not assigned, surrogate
+model files will not be written. The default is empty. The syntax is: "sbgo_surrogate_output_name {string}".
+
+.. _input_deck_options_method_dakota_sbgo_moga_popsize_kw:
+
+moga_population_size
+^^^^^^^^^^^^^^^^^^^^
+
+Population size for the Multi-Objective Genetic Algorithm (MOGA). The default is set to 300.
+The syntax is: "moga_population_size {integer}".
+
+.. _input_deck_options_method_dakota_sbgo_moga_maxfunceval_kw:
+
+moga_max_function_evaluations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Maximum number of function evaluations for the MOGA. The default is set to 20,000.
+The syntax is: "moga_max_function_evaluations {integer}".
+
+.. _input_deck_options_method_dakota_sbgo_moga_niching_kw:
+
+moga_niching_distance
+^^^^^^^^^^^^^^^^^^^^^
+
+This parameter specifies the niching Euclidean distance between design candidates. The
+minimum allowable distance between any two designs in the performance space is the Euclidian
+(simple square-root-sum-of-squares calculation) distance defined by these percentages.
+The purpose of niching is to encourage differentiation along the Pareto frontier and thus
+a more even and uniform sampling. This is typically accomplished by discouraging clustering
+of design points in the performance space. The default is set to 0.1. The syntax is:
+"moga_niching_distance {value}".
+
+
+.. _input_deck_options_method_dakota_mdps_kws:
+
+Multi-Dimensional Parameter Study
+---------------------------------
+
+The following parameters are used to set a Multi-Dimensional Parameter Study (MDPS). The
+:ref:`dakota_workflow <input_deck_options_method_dakota_workflow_kw>` keyword **MUST** be
+set to "mdps" to be able to do a multi-dimensional parameter study.
+
+.. _input_deck_options_method_dakota_mdps_partition_kw:
+
+mdps_partitions
+^^^^^^^^^^^^^^^
+
+This parameter specifies how design variables are sampled on a full factorial grid of study
+points. The user **MUST** define this parameter to do a multi-dimensional parameter study.
+The syntax is: "mdps_partitions {value},..., {value}".
+
+.. _input_deck_options_method_dakota_mdps_responses_kw:
+
+mdps_response_functions
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This parameter specifies the number of generic responses to be evaluated. Each of these
+functions is simply a response quantity of interest with no special interpretation taken
+by the method in use. Whereas objective, constraint, and residual functions have special
+meanings for gradient-based optimization algorithms, the generic response function data
+set need not have a specific interpretation and the user is free to define whatever
+functional form is convenient. The user **MUST** define this parameter. The syntax is:
+"mdps_response_functions {integer}".
+
 .. _input_deck_options_output_subsec:
 
 Output
@@ -1716,6 +2348,14 @@ file format, e.g. `Paraview <https://www.paraview.org/>`_.
    "vonmises", "Von Mises stress"
    "temperature", "Temperature"
 
+
+.. _input_deck_options_output_native_kw:
+
+native_service_output
+=====================
+
+This option specifies whether to have the service output quantities of interest in its native
+format. Syntax: "native_service_output {Boolean}". 
 
 .. _input_deck_options_mesh_subsec:
 
