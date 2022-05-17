@@ -1760,7 +1760,7 @@ In density-based topology optimization problems it is often necessary to perform
 design variables to avoid numerical instabilities in the results (e.g. checkerboarding). Furthermore, 
 the filter helps to ensure an approximate minimum length scale of features in the optimized design. 
 While the filter does not completely eliminate the issue of mesh-dependency in many cases, it greatly 
-helps alleviate much of the issue. It is always encourage to use a filter if solvign a density-based 
+helps alleviate much of the issue. It is always encourage to use a filter if solving a density-based 
 topology optimization problem. The user is recommended to set a filter radius of at least twice the 
 size of a typical finite element in the design domain. Morphorm also provides the option to apply 
 subsequent projection operations, which helps the optimizer produce a "0-1" design. 
