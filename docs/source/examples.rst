@@ -3,20 +3,19 @@
 Introduction
 ############
 
-This chapter will introduce the user to the optimization-based design capabilities in
-Morphorm through a series of tutorials. Each tutorial covers the all the steps required
+This chapter will introduce the reader to the optimization-based design capabilities in
+Morphorm through a series of tutorials. Each tutorial will cover all the steps required
 to sucessfully run a Morphorm optimization-based design problem. The tutorials will
-introduce users to topology and shape optimization concepts and how these concepts
-are applied to solve single- and multi-physics optimization-based design problems.
+introduce readers to topology and shape optimization concepts and show them how to apply 
+these concepts to solve single- and multi-physics optimization-based design problems.
 Tutorials on Design of Experiment, Surrogate-Based Optimization, and Pareto Optimization
-are presented in this chapter to demonstrate users how to apply these optimization-based
-design methods to their problems. Furthermore, this chapter introduces the users to Design
-Under Uncertainty methods and explains how these design under uncertainty methods are
-applied to produce designs robust to inherent imperfections. A key feature of Morphorm
-is its ability to combine multiple optimization-based design methods to build automated
-end-to-end design workflows. This chapter will also present several tutorials explaining
-how multiple Morphorm optimization-based design methods can be combined to produce an
-automated end-to-end design workflow.
+are also presented in this chapter. Furthermore, this chapter introduces readers to Design
+Under Uncertainty concepts and shows readers how design under uncertainty methods can be 
+applied to produce design solutions robust to inherent imperfections. Another key feature 
+of Morphorm is its ability to combine multiple optimization-based design methods to build 
+automated end-to-end design workflows. This chapter will present readers several tutorials 
+explaining how one can combine multiple Morphorm optimization-based design pardigms to 
+produce hands-off end-to-end design workflows.
 
 .. _examples_topt_sec:
 
