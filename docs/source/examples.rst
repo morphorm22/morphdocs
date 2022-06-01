@@ -91,19 +91,19 @@ algorithm towards a design configuration that achieves the best performance give
 requirements for :math:numref:`eq_topo_form`. These tutorials will describe how to set and tune 
 the parameters associated with these methods based on the choosen material description. Readers 
 should be capable of setting both density- or level set based topology optimization problems 
-for a plethora of engineering applications after going through the turorials presented herein. 
+for a plethora of engineering applications after going through the tutorials presented herein. 
 
 .. _examples_topt_structTO_density_subsec:
 
 Density Method
 **************
 
-A critical aspect of density-based methods is the proper selection of the material interpolation 
-function used to aid steer the optimizer towards a "0-1" design solution. In a density-based topology 
-optimization problem, the density values are set to :math:`0\leq{z}_{min}\leq{z}\leq{1}`, where 
-:math:`0` denotes the absence of material at a given material point and :math:`1` denotes the 
-existence of material at a given material point. A modified Solid Isotropic Material Penalization 
-material interpolation function is used in Morphorm, which is defined as 
+A critical aspect of density-based topology optimization methods is the selection of the material 
+interpolation function, which is used to aid steer the optimizer towards a "0-1" design solution. 
+In a density-based topology optimization problem, the density values are set to :math:`0\leq{z}_{min}
+\leq{z}\leq{1}`, where :math:`0` denotes the absence of material at a given material point and 
+:math:`1` denotes the existence of material at a given material point. A modified Solid Isotropic 
+Material Penalization material interpolation approach is used in Morphorm, which is defined as 
 
 .. math::
    :label: eq_modified_simp
@@ -111,14 +111,18 @@ material interpolation function is used in Morphorm, which is defined as
    z_{min} + (1 + z_{min})z^p
 
 where :math:`z_{min}` is the :ref:`minimum value the density <input_deck_options_scenario_minersatz_kw>`  
-can take to prevent singular matrices and thus a singular linear system of equations. The parameter 
-:math:`p` denotes a :ref:`penalization factor <input_deck_options_scenario_pexp_kw>`, which usually 
-takes on the value of 3. To avoid numerical artifacts that may result from the discretization of the 
-design variables with possibly unstable finite element formulations, a :ref:`filter <input_deck_options_method_filter_kws>` 
-is applied in most, if not all, density-based topology optimization problems. The filter also offers 
-a mechanism to implicitly enforce an approximate minimum feature size constraint. While the filter 
+can take at a given material point. The :math:`z_{min}` parameter is used to prevent singular matrices 
+and thus singular linear system of equations. The parameter :math:`p` denotes a :ref:`penalization 
+factor <input_deck_options_scenario_pexp_kw>`, which usually takes on the value of 3. In some applications,
+such as stress constrained mass minimization problems, a continuation scheme can be used on the penalization 
+factor to aid steer the topology optimization algorithm towards a "0-1" design solution. To avoid numerical 
+artifacts that may result from the discretization of the design variables with possibly unstable finite 
+element formulations, a :ref:`filter <input_deck_options_method_filter_kws>` is used in most, if not all, 
+density-based topology optimization problems. The filter also provides a mechanism to implicitly enforce 
+an approximate minimum feature size constraint on the topology optimization problem. While the filter 
 does not completely eliminates the issue of mesh-dependencies, it greatly helps control it. The filter
-concept is explained in this next sections. 
+functionality is explained in the next sections. In addition, the upcoming tutorials will cover the steps 
+require to set the filter parameters in the Morphorm input deck.
 
 .. _examples_topt_structTO_density_filter_subsubsec:
 
@@ -187,6 +191,24 @@ to review the :ref:`filter section <input_deck_options_method_filter_kws>` to go
 practices on how to set the parameters for the projection scheme. 
 
 
+.. _examples_topt_structTO_density_fixedblocks_subsubsec:
+
+Fixed Blocks 
+************
+
+In topology optimization problems, the optimization algorithm is capable of adding or removing 
+material at every material point within the design domain :math:`\Omega`. In some use cases, the 
+designer may want to discourage the optimization algorithm from removing material from certain 
+regions due to practical engineering considerations. For instance, a component must be mounted on 
+top of a surface. Therefore, the optimization algorithm cannot be allow to remove material available 
+on this surface as well as other close surrounding areas. The fixed block feature is available in 
+Morphorm to enable users to specify non-optimizable regions in the design domain. This information 
+is pass to the optimization algorithm and at runtime the algorithm avoids removing material from
+the non-optimizable regions. The :ref:`fixed_block_ids <input_deck_options_method_fblocks_ids_kw>` 
+parameter in the input deck enables users to specify the element block(s) associated with these 
+non-optimizable regions. The fixed block feature will be utilized in the upcoming tutorials to 
+show users how to properly set and use the fixed block functionality in their problems. 
+
 .. _examples_topt_compliance_sec:
 
 Compliance Minimization
@@ -211,19 +233,6 @@ Evaluating :math:`u(\hat{z})` requires solving the classic linear elastostatics 
 on the :ref:`filtered design variables <examples_topt_structTO_density_filter_subsubsec>` 
 :math:`\hat{z}`, and :math:`f` is the force vector. :math:`V_t` is the target volume 
 (or mass) while :math:`V(\hat{z})` denotes the current volume of the physical system.  
-
-.. _examples_topt_structTO_density_fixedblocks_subsubsec:
-
-Fixed Blocks 
-************
-
-The optimizer can add or remove material from the design space at every material location in topology
-optimization problems. In some use cases, the designer may want to discourage the optimizer from removing 
-material from certain regions due to practical constraints; for instance, a component will be mounted on 
-top of the surface of the fixed volume. The :ref:`fixed_block_ids <input_deck_options_method_fblocks_ids_kw>` 
-parameter enables users to specify the element block(s) associated with the non optimizable regions. 
-The fixed block feature is utilized in this tutorial to show users how to use this functionality in
-the future. 
 
 .. _examples_topt_structTO_density_results_subsubsec:
 
@@ -286,4 +295,4 @@ given by
    z_{min} + (1-z_{min})[m_V(\hat{z})]^p
    
 where :math:`m_V(\hat{z})` is given by :math:numref:`eq_proj_func` and :math:`p` is a 
-:ref:`penalization factor <examples_topt_structTO_density_subsubsec>`.
+:ref:`penalization factor <examples_topt_structTO_density_subsec>`.
