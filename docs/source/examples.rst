@@ -80,7 +80,7 @@ the algorithm towards a crisp "0-1" design solution. In contrast, with level set
 explicit design configuration can be achieved at each optimization iteration. Thus, eliminating 
 the requirement of performing additional numerical studies after finding an optimized design
 solution in order to verify the optimized performance metrics and physical quantities of interests. 
-However, in certain use cases (e.g. structural topology optimization), density-based methods 
+However, in certain use cases (compliance minimization), density-based methods 
 may reach an optimized design solution faster than level set methods. 
 
 The tutorials presented in this section describe how to set a topology optimization problem
@@ -93,32 +93,10 @@ the parameters associated with these methods based on the choosen material descr
 should be capable of setting both density- or level set based topology optimization problems 
 for a plethora of engineering applications after going through the turorials presented herein. 
 
-.. _examples_topt_compliance_subsec:
-
-Structural Topology Optimization
-********************************
-
-A structural topology optimization seeks to minimize the structural compliance, i.e. maximize 
-the stiffness, given a volume constraint. Mathematically, a structural topology optimization 
-problem is defined as:
-
-.. math::
-   :label: eq_compliance_prob
-
-   \min_{z} \quad & \frac{1}{2}f^T u(z) \\
-   \textrm{s.t.} \quad & V(z) \leq V_{t} \\
-   \quad & z_{min}\leq z \leq z_{max}
-
-Evaluating :math:`u(z)` requires solving the classic linear elastostatics problem :math:`K(z)u=f`,
-where :math:`K(z)` is the stiffness matrix, which depends on the design variable :math:`z`, and 
-:math:`f` is the force vector. :math:`V_t` is the target volume while :math:`V(z)` denotes the 
-current volume of the physical system. The volume constraint in :math:numref:`eq_compliance_prob`
-can be replaced by a mass constraint if preferred. 
-
-.. _examples_topt_structTO_density_subsubsec:
+.. _examples_topt_structTO_density_subsec:
 
 Density Method
-==============
+**************
 
 A critical aspect of density-based methods is the proper selection of the material interpolation 
 function used to aid steer the optimizer towards a "0-1" design solution. In a density-based topology 
@@ -130,28 +108,25 @@ material interpolation function is used in Morphorm, which is defined as
 .. math::
    :label: eq_modified_simp
 
-   z_{min} + (1 + z_{min})*z^p
+   z_{min} + (1 + z_{min})z^p
 
 where :math:`z_{min}` is the :ref:`minimum value the density <input_deck_options_scenario_minersatz_kw>`  
 can take to prevent singular matrices and thus a singular linear system of equations. The parameter 
 :math:`p` denotes a :ref:`penalization factor <input_deck_options_scenario_pexp_kw>`, which usually 
-takes on the value of 3. 
-
-To avoid numerical artifacts that may result from the discretization of the design variables with 
-possibly unstable finite element formulations, a :ref:`filter <input_deck_options_method_filter_kws>` 
+takes on the value of 3. To avoid numerical artifacts that may result from the discretization of the 
+design variables with possibly unstable finite element formulations, a :ref:`filter <input_deck_options_method_filter_kws>` 
 is applied in most, if not all, density-based topology optimization problems. The filter also offers 
-a mechanism to enforce an approximate minimum length scale of features in the optimized design solutions. 
-While the filter does not completely eliminates the issue of mesh-dependencies, it greatly helps control 
-it. 
+a mechanism to implicitly enforce an approximate minimum feature size constraint. While the filter 
+does not completely eliminates the issue of mesh-dependencies, it greatly helps control it. The filter
+concept is explained in this next sections. 
 
 .. _examples_topt_structTO_density_filter_subsubsec:
 
 Kernel Filter
--------------
+=============
 
-There are two types of filters implemented in Morphorm. The first is the kernel filter, which can take 
-on multiple variations. In this :ref:`tutorial <examples_topt_compliance_subsec>`, a linear kernel filter 
-is applied to solve :math:numref:`eq_compliance_prob`. The linear kernel filter is defined as
+There are two types of filters implemented in Morphorm. The first is the kernel filter, which can 
+take on multiple variations. A linear kernel filter is mathematically defined as
 
 .. math::
    :label: eq_linear_kernel_filter
@@ -167,7 +142,7 @@ are given as
 .. math::
    :label: eq_filtered_material_field
 
-   \hat{z}^m_j=\sum_{i=1}^{N_p}=w_{ij}x_i^m
+   \hat{z}^m_j=\sum_{i=1}^{N_p}=w_{ij}z_i^m
    
 where :math:`N_p` denotes the number of material points inside the filter radius and the weights 
 :math:`w_{ij}` are defined as
@@ -188,7 +163,7 @@ to learn how to best set the kernel filter parameters.
 .. _examples_topt_structTO_density_projection_subsubsec:
 
 Heaviside Projection 
---------------------
+====================
 
 In addition to the use of material interpolation functions and density filters, density-based 
 topology optimization problems may also require the use of projection techniques to aid steer 
@@ -208,6 +183,107 @@ the projected material points for candidate material :math:`m`, where :math:`m=1
 tutorial. The parameter :math:`\eta` is set to its default value of 0.5 while a continuation 
 scheme is used to update :math:`\beta`. :math:`\beta` can be incrementally increased at a fixed 
 frequency to aid steer the optimization algorithm to a "0-1" design solution. The reader is advice 
-to review the :ref:`filter section <input_deck_options_method_filter_kws>` to understand how to 
-best set the parameters for the projection scheme, which are set to their default values for 
-:ref:`this tutorial <examples_topt_compliance_subsec>`.  
+to review the :ref:`filter section <input_deck_options_method_filter_kws>` to go over the best 
+practices on how to set the parameters for the projection scheme. 
+
+
+.. _examples_topt_compliance_sec:
+
+Compliance Minimization
+#######################
+
+The most understood and solved topology optimization problem is complaince minimization. In this 
+tutorial, we apply a density-based material description to solve a compliance minimization 
+problem. A compliance minimization problem seeks to minimize the structural compliance (maximize 
+the stiffness of the structure) given a volume or mass constraint. Mathematically, a compliance 
+minimization problem is defined as:
+
+.. math::
+   :label: eq_compliance_prob
+
+   \min_{z} \quad & \frac{1}{2}f^T u(\hat{z}) \\
+   \textrm{s.t.} \quad & V(\hat{z}) \leq V_{t} \\
+   \quad & z_{min}\leq z \leq z_{max} \\ \\
+   \textrm{with:} \quad & u(\hat{z})=K^{-1}(\hat{z})f 
+
+Evaluating :math:`u(\hat{z})` requires solving the classic linear elastostatics problem 
+:math:`K(\hat{z})u - f = 0`, where :math:`K(\hat{z})` is the stiffness matrix, which depends 
+on the :ref:`filtered design variables <examples_topt_structTO_density_filter_subsubsec>` 
+:math:`\hat{z}`, and :math:`f` is the force vector. :math:`V_t` is the target volume 
+(or mass) while :math:`V(\hat{z})` denotes the current volume of the physical system.  
+
+.. _examples_topt_structTO_density_fixedblocks_subsubsec:
+
+Fixed Blocks 
+************
+
+The optimizer can add or remove material from the design space at every material location in topology
+optimization problems. In some use cases, the designer may want to discourage the optimizer from removing 
+material from certain regions due to practical constraints; for instance, a component will be mounted on 
+top of the surface of the fixed volume. The :ref:`fixed_block_ids <input_deck_options_method_fblocks_ids_kw>` 
+parameter enables users to specify the element block(s) associated with the non optimizable regions. 
+The fixed block feature is utilized in this tutorial to show users how to use this functionality in
+the future. 
+
+.. _examples_topt_structTO_density_results_subsubsec:
+
+Results 
+*******
+
+
+.. _examples_topt_stressconst_subsec:
+
+Stress Constrained Mass Minimization
+************************************
+
+The consideration of stress constraints in topology optimization formulations is
+fundamental to the overall performance of the structure. Stiffness-based designs 
+such as compliance minimization problems do not treat material strength as a driving 
+design requirement in the topology optimization formulation. Therefore, stiffness-based 
+formulations can yield innefective designs due to their inability to meet the stress 
+requirements. From a structural engineering standpoint, a more appropriate topology 
+optimization formulation should aim to find the lightest structure while not exceeding 
+the material strength (stress) requirements at any material point.
+
+Since stress is a fundamental local quantity, a topology optimization formulation 
+considering material strenght must incorporate a large number of stress constraints 
+to prevent yielding from happening at any material point. The large number of stress 
+constraints demands the application of an optimization algorithm capable of managing 
+large number of constraints in a computationally efficient manner. Morphorm uses an 
+augmented Lagrangian (AL) formulation and high performance computing enabled optimization 
+algorithm to effectively solve topology optimization problems with local stress constraints. 
+The AL algorithm yields designs that do not violate the stress limit at any material point 
+in the design domain while preserving and modeling the local nature of stress. The 
+efficiency of the algorithm results from its ability to efficiently handle large number 
+of constraints at each optimization step. 
+
+A stress-constrained topology optimization problem aims to find the lightest structure 
+capable of supporting the applied loads without experiencing failure at any material 
+point in the domain. To limit the yeild stress at points :math:`x_j\in\Omega` stress 
+constraints of the form :math:`g_j(u(z),z)\leq{0},\ j=1,\dots,N_p` are imposed, where 
+:math:`\Omega` is the design domain and :math:`N_p` denotes the number of material points 
+where stress constraints are applied. Thus, in its discrete form, the stress constrained 
+mass minimization topology optimization problem is defined as:
+
+.. math::
+   :label: eq_stressconst_prob
+
+   \min_{z} \quad & \frac{\mathbf{V}^Tm_V(\hat{z})}{\mathbf{V}^T\mathbf{1}} \\
+   \textrm{s.t.} \quad & m_E(\hat{z})\Lambda_j(u(\hat{z}))\left(\Lambda_j^2(u(\hat{z}))+1\right) \leq 0,\quad j=1,\dots,N_p \\
+   \quad & z_{min}\leq z \leq z_{max} \\ \\
+   \textrm{with:} \quad & \Lambda_j=\frac{\sigma^v_j(u(\hat{z}))}{\sigma_{lim}}-1 \\
+   \quad & u(\hat{z})=K^{-1}(\hat{z})f
+
+where :math:`\hat{z}` are the :ref:`filtered designed variables <examples_topt_structTO_density_filter_subsubsec>`,
+:math:`\sigma^v_j(u(\hat{z}))` is the Von Mises stress at the j-th material point, and :math:`\sigma_{lim}` is the 
+Von mises stress limit at all material points in the domain. The volume interpolation function :math:`m_V(\hat{z})` 
+is given by :math:numref:`eq_proj_func` while the Von mises stress interpolation function :math:`m_E(\hat{z})` is 
+given by 
+
+.. math::
+   :label: eq_vonmises_intrp
+   
+   z_{min} + (1-z_{min})[m_V(\hat{z})]^p
+   
+where :math:`m_V(\hat{z})` is given by :math:numref:`eq_proj_func` and :math:`p` is a 
+:ref:`penalization factor <examples_topt_structTO_density_subsubsec>`.
