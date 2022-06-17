@@ -63,12 +63,12 @@ equations do not have a known analytical solution.
 Material Description
 ********************
 
-Ideally, the design variable :math:`z` should be modeled as a discrete design variable that only 
-takes on a zero or one value at a given material point, where one indicates the existance of 
-material and zero the abscence of material. However, this approach demands the application of discrete 
-optimization methods to solve :math:numref:`eq_topo_form`, which are ill-suited for most relevant 
-engineering applications. To circumvent this hurdle, a continuum design variable description is 
-used to model the material distribution within the design domain. This approach permits the 
+Ideally, in a topology optimization problem, the design variables should be modeled as a discrete 
+variable that only takes on a zero or one value at a given material point, where one indicates the 
+existance of material and zero the abscence of material. However, this approach demands the application 
+of discrete optimization methods to solve :math:numref:`eq_topo_form`, which are ill-suited for most 
+relevant engineering applications. To circumvent this hurdle, a continuum design variable description 
+is used to model the material distribution within the design domain. This approach permits the 
 application of gradient-based optimization methods to solve :math:numref:`eq_topo_form`, which are 
 computationally more effective than discrete optimization methods in finding a solution to 
 :math:numref:`eq_topo_form`. 
@@ -159,9 +159,78 @@ where :math:`N_p` denotes the number of material points inside the filter radius
 :math:`\mathcal{N}_j=\{x_i^m\colon{d}(i,j)\leq{R}\}` is the neighborhood of material points 
 inside the filter radius :math:`R`, which includes the material points on the boundary of the 
 radius, with respect to material point :math:`x_j^m`. The other type of filter available in 
-Morphorm for density-based topology optimization problems is the Helmholtz filter, which will
-be covered in a subsequent tutorial. The reader is advice to review the :ref:`filter section <input_deck_options_method_filter_kws>` 
-to learn how to best set the kernel filter parameters.  
+Morphorm for density-based topology optimization is the Helmholtz filter, which will
+be covered in more detail :ref:`here <examples_topt_structTO_density_helmholtz_subsubsec>`. 
+The reader is advice to review the :ref:`filter section <input_deck_options_method_filter_kws>` 
+to understand how to best set the parameters associated with the kernel filter.  
+
+
+.. _examples_topt_structTO_density_helmholtz_subsubsec:
+
+Helmholtz Filter
+================
+
+The Helmholtz filter, also know as the PDE filter, is another efficient way of enforcing an 
+approximate minimum feature size constraint on the topology optimized solution. Traditionally,
+the Helmholtz filter has been formulated as the minimization of the potential :math:`\Pi`:
+
+.. math::
+   :label: eq_helmholtz_filter_potential
+   
+   \Pi(\hat{z})=\frac{1}{2}\int_{\Omega}\ell_0^2\Vert\nabla\hat{z}\Vert^2\ d\Omega + \frac{1}{2}
+   \int_{\Omega}\left(z-\hat{z}\right)d\Omega
+
+where :math:`\ell_0` is a length scale parameter. The second integral above aims to keep the 
+filtered filtered design variables :math:`\hat{z}` close to the unfiltered design variables
+:math:`z`, i.e. the filtered design variables should not be significantly different than the
+unfiltered design variables.However, the unfiltered design variables can be highly oscillatory, 
+which the first integral in :math:numref:`eq_helmholtz_filter_potential` aims to control. The 
+compromise between this two goals is regulated by the lenght scale parameter :math:`\ell_0`.
+
+Minimizing the potential in :math:numref:`eq_helmholtz_filter_potential` with respect to the 
+filtered design variables :math:`\hat{z}` yields 
+
+.. math::
+   :label: eq_helmholtz_filter_1
+   
+   \delta\Pi(\hat{z})&=-\int_{\Omega}\ell_0^2\Delta\hat{z}\delta\hat{z}d\Omega+\int_{\Omega}\hat{z}\delta
+   \hat{z}-\int_{\Omega}z\delta\hat{z}\ = 0 \quad\mbox{in}\ \Omega \\ \\
+   \mbox{with:}&\quad\nabla\hat{z}\cdot\mathbf{n}=0\quad \mbox{on}\ \Gamma
+
+where :math:`\mathbf{n}` is the outward normal unit vector to the design volume :math:`\Omega`.
+The Helmholtz filter formulation has one drawback, it does not penalize placement of material
+along the boundaries of the design domain. This causes the Helmholtz filter to favor designs 
+with boundaries coinciding with the the design domain boundaries. This undesired behavior is 
+know as the "stick" effect. Luckily, this problem can be mitigated by assigning a cost to the 
+material placed along the design domain boundaries. To achieve this goal, a boundary integral
+is added to :math:numref:`eq_helmholtz_filter_potential`, which gives
+
+.. math::
+   :label: eq_helmholtz_filter_potential_wboundary
+   
+   \tilde{\Pi}(\hat{z})=\frac{1}{2}\int_{\Omega}\ell_0^2\Vert\nabla\hat{z}\Vert^2\ d\Omega + \frac{1}{2}
+   \int_{\Omega}\left(z-\hat{z}\right)d\Omega + \frac{1}{2}\int_{\Gamma}\ell_s\hat{z}^2 d\Gamma
+
+where :math:`\ell_s` is the surface length scale parameter and :math:`\Gamma` denotes the domain 
+boundary. Minimizing :math:numref:`eq_helmholtz_filter_potential_wboundary` with respect to the 
+filtered design variables :math:`\hat{z}` yields 
+
+.. math::
+   :label: eq_helmholtz_filter_2
+   
+   \delta\tilde{\Pi}(\hat{z})&=-\int_{\Omega}\ell_0^2\Delta\hat{z}\delta\hat{z}d\Omega-\int_{\Omega}(z-\hat{z})
+   \delta\hat{z}d\Omega + \int_{\Gamma}(\ell_0^2\nabla\hat{z}\cdot\mathbf{n}+\ell_s\hat{z})d\Gamma=0 \\ \\
+   \mbox{with:}&\quad\ell_0^2\nabla\hat{z}\cdot\mathbf{n}=-\ell_s\hat{z}\quad \mbox{on}\ \Gamma
+   
+Instead of solving :math:numref:`eq_helmholtz_filter_1` with homogeneous boundary conditions 
+to enforce an approximate minimum feature size constraint on the topology optimized solution,
+:math:numref:`eq_helmholtz_filter_2` is solved with Robin boundary conditions :math:`\ell_0^2
+\nabla\hat{z}\cdot\mathbf{n}=-\ell_s\hat{z}\ \mbox{on}\ \Gamma`. If :math:`\ell_s\rightarrow{0}`,
+:math:numref:`eq_helmholtz_filter_1` is recovered. In contrast, placing material along the 
+domain boundaries becomes constly as :math:`\ell_s\rightarrow\infty` and designs that adhere 
+to the domain boundaries are avoided. The reader is advice to review the :ref:`filter section 
+<input_deck_options_method_filter_kws>` to understand how to best tune the Helmholtz filter 
+parameters.    
 
 
 .. _examples_topt_structTO_density_projection_subsubsec:
@@ -214,11 +283,13 @@ show users how to properly set and use the fixed block functionality in their pr
 Compliance Minimization
 #######################
 
-The most understood and solved topology optimization problem is complaince minimization. In this 
-tutorial, we apply a density-based material description to solve a compliance minimization 
-problem. A compliance minimization problem seeks to minimize the structural compliance (maximize 
-the stiffness of the structure) given a volume or mass constraint. Mathematically, a compliance 
-minimization problem is defined as:
+The most common topology optimization problem solved by practitioners is complaince minimization. 
+A compliance minimization problem seeks to minimize the structural compliance (maximize the stiffness 
+of the structure) given a volume or mass constraint. In this tutorial, a density-based material 
+description will be applied. At the end of this tutorial, users will be able to set a density-based 
+compliance minization problem in Morphorm.    
+
+Mathematically, a compliance minimization problem is defined as:
 
 .. math::
    :label: eq_compliance_prob
@@ -228,22 +299,123 @@ minimization problem is defined as:
    \quad & z_{min}\leq z \leq z_{max} \\ \\
    \textrm{with:} \quad & u(\hat{z})=K^{-1}(\hat{z})f 
 
-Evaluating :math:`u(\hat{z})` requires solving the classic linear elastostatics problem 
-:math:`K(\hat{z})u - f = 0`, where :math:`K(\hat{z})` is the stiffness matrix, which depends 
-on the :ref:`filtered design variables <examples_topt_structTO_density_filter_subsubsec>` 
+Evaluating the displacement field :math:`u(\hat{z})` requires solving the classic linear 
+elastostatics problem :math:`K(\hat{z})u - f = 0`, where :math:`K(\hat{z})` is the stiffness 
+matrix, which depends on the :ref:`filtered design variables <examples_topt_structTO_density_filter_subsubsec>` 
 :math:`\hat{z}`, and :math:`f` is the force vector. :math:`V_t` is the target volume 
-(or mass) while :math:`V(\hat{z})` denotes the current volume of the physical system.  
+(or mass) while :math:`V(\hat{z})` denotes the current design volume (or mass). 
+The superscript :math:`T` in :math:numref:`eq_compliance_prob` denotes the transpose operation. 
 
-.. _examples_topt_structTO_density_results_subsubsec:
+.. _examples_topt_compliance_inputdeck_subsec:
+
+Input Deck 
+**********
+
+The following excerpt shows the input deck used to solve the compliance minimization problem
+defined in :math:numref:`eq_compliance_prob`.
+
+.. code-block:: console
+   
+  begin service 1
+    code platomain
+    number_processors 1
+  end service
+
+  begin service 2
+    code plato_analyze
+    number_processors 1
+    device_ids 0
+  end service
+   
+  begin criterion 1
+    type mechanical_compliance 
+  end criterion
+ 
+  begin criterion 2
+    type volume 
+  end criterion
+      
+  begin scenario 1
+    physics steady_state_mechanics
+    dimensions 3
+    loads 1
+    boundary_conditions 1
+    material 1
+  end scenario   
+
+  begin objective
+    type weighted_sum
+    criteria 1 
+    services 2 
+    scenarios 1 
+    weights 1
+  end objective
+
+  begin output
+    service 2
+    data dispx dispy dispz vonmises
+  end output
+
+  begin boundary_condition 1
+    type fixed_value
+    location_type nodeset
+    location_name ns1
+    degree_of_freedom dispx dispy dispz
+    value 0 0 0
+  end boundary_condition
+
+  begin load 1
+    type traction
+    location_type sideset
+    value 0 0 -1e5
+    location_name ss1
+  end load
+         
+  begin constraint 1
+    criterion 2
+    relative_target .15
+    service 1
+    scenario 1
+  end constraint
+   
+  begin material 1
+    material_model isotropic_linear_elastic
+    poissons_ratio .33
+    youngs_modulus 1e9
+  end material
+
+  begin block 1
+    material 1
+  end block
+  
+  begin block 2
+    material 1
+  end block 2
+
+  begin optimization_parameters
+    max_iterations 50
+    filter_type helmholtz
+    filter_radius_absolute 0.173
+    boundary_sticking_penalty 0.0
+    fixed_block_ids 2
+    optimization_algorithm oc
+    enforce_bounds false
+    output_frequency 0
+  end optimization_parameters
+   
+  begin mesh
+    name FixedBlocks.exo
+  end mesh
+
+.. _examples_topt_compliance_results_subsec:
 
 Results 
 *******
 
-
-.. _examples_topt_stressconst_subsec:
+.. _examples_topt_stressconst_sec:
 
 Stress Constrained Mass Minimization
-************************************
+####################################
 
 The consideration of stress constraints in topology optimization formulations is
 fundamental to the overall performance of the structure. Stiffness-based designs 
@@ -296,3 +468,330 @@ given by
    
 where :math:`m_V(\hat{z})` is given by :math:numref:`eq_proj_func` and :math:`p` is a 
 :ref:`penalization factor <examples_topt_structTO_density_subsec>`.
+
+.. _examples_topt_stresscont_inputdeck_subsec:
+
+Input Deck 
+**********
+
+The following excerpt shows the input deck used to solve the compliance minimization problem
+defined in :math:numref:`eq_stressconst_prob`. 
+
+.. code-block:: console
+
+  begin service 1 
+    code platomain 
+    number_processors 1
+  end service
+
+  begin service 2
+    code plato_analyze
+    number_processors 1
+    update_problem true
+  end service
+   
+  begin criterion 1
+    type stress_and_mass
+    scmm_constraint_exponent 2
+    stress_limit 3e6
+    scmm_penalty_expansion_multiplier 1.5
+    scmm_initial_penalty 1
+    scmm_penalty_upper_bound 10000
+  end criterion
+ 
+  begin scenario 1
+    physics steady_state_mechanics
+    dimensions 3
+    loads 1
+    boundary_conditions 1
+    material 1
+  end scenario   
+
+  begin objective
+    type weighted_sum
+    criteria 1 
+    services 2 
+    scenarios 1 
+    weights 1
+  end objective
+
+  begin output
+    service 2
+    data dispx dispy dispz vonmises
+  end output
+
+  begin boundary_condition 1
+    type fixed_value
+    location_type nodeset
+    location_name ss_1
+    degree_of_freedom dispx dispy dispz
+    value 0 0 0
+  end boundary_condition
+
+  begin load 1
+    type traction
+    location_type sideset
+    location_name ss_2
+    value 0 -1e6 0
+  end load
+            
+  begin material 1
+    material_model isotropic_linear_elastic
+    poissons_ratio .3
+    youngs_modulus 1e9
+    mass_density 1e3
+  end material
+
+  begin block 1
+    material 1
+  end block
+
+  begin optimization_parameters
+    max_iterations 1
+    filter_radius_absolute 0.05712
+    number_buffer_layers 0
+    verbose true
+    write_restart_file false
+    restart_iteration 0
+    optimization_algorithm rol_bound_constrained
+    rol_subproblem_model lin_more
+    reset_algorithm_on_update true
+    hessian_type zero
+    problem_update_frequency 1
+    output_frequency 500
+  end optimization_parameters
+
+  begin mesh
+    name lbracket.exo
+  end mesh
+
+.. _examples_topt_stressconst_results_subsec:
+
+Results 
+*******
+
+.. _examples_topt_fluids_pressdrop_sec:
+
+Pressure Drop Minimization
+##########################
+
+The governing incompressible Navier-Stokes equations are defined as
+
+:math:`\textit{Incompressibility Condition}`
+
+.. math::
+  :label: eq_incompressible_condition
+  
+  \frac{\partial u_i}{\partial x_i}=0
+
+:math:`\textit{Mass Conservation}`
+
+.. math::
+  :label: eq_mass_conservation
+  
+  \frac{1}{c^2}\frac{\partial p}{\partial t}=-\rho_f\frac{\partial u_i}{\partial x_i}
+  \quad\mbox{in}\quad\Omega
+
+:math:`\textit{Momentum Conservation}`
+
+.. math::
+  :label: eq_momentum_conservation
+
+  \rho_f\left[ \frac{\partial u_i}{\partial t} + \frac{\partial}{\partial x_j}(u_j u_i) \right] = 
+  -\frac{\partial p}{\partial x_i} + \frac{\partial\tau_{ij}}{\partial x_j} + \frac{\mu}{\kappa} 
+  u_i\quad\mbox{in}\quad\Omega
+
+The domain :math:`\Omega` is defined as the union of the fluid and solid domains, :math:`\Omega=
+\Omega_f\cup\Omega_s`. The term :math:`u_i` is the i-th velocity component, :math:`x_i` i-th spatial 
+coordinate, :math:`\rho_f` is the fluid's density, :math:`p` is the pressure, :math:`c` is the speed 
+of sound, :math:`t` denotes time, :math:`\mu` is the dynamic viscocity, :math:`\kappa` is the permeability 
+coefficient. The :math:`\frac{\mu}{\kappa}` term is only used in density-based topology optimization 
+problems. This term is not part of the momentum conservation equation :math:numref:`eq_momentum_conservation` 
+in level-set based topology optimization problems.
+
+The deviatoric stress tensor is defined as
+
+.. math::
+  :label: eq_deviatoric_stress_incompressible
+  
+  \tau_{ij}=\mu\left(\frac{\partial u_i}{\partial x_j}+\frac{\partial u_j}{\partial x_i}\right)
+
+The conservation equations :math:numref:`eq_incompressible_condition` - :math:numref:`eq_momentum_conservation` 
+are completed after defining the boundary conditions
+
+.. math::
+  :label: eq_initial_bcs
+  
+  u_i=u_i^0\quad\mbox{on}\quad\Gamma_u
+
+and
+
+.. math::
+  :label: eq_traction_bcs
+  
+  t_i=\left( \tau_{ij} - \delta_{ij}p \right)n_j=t_i^0\quad\mbox{on}\quad\Gamma_t
+
+where :math:`\Gamma_u` and :math:`\Gamma_t` denote the surfaces where the velocity and traction 
+boundary conditions and :math:`n_j` is the outward normal. 
+
+A pressure drop minimization problem aims to find the lightest structure capable of minimizing 
+the pressure drop between the inlets and outlets of a system.  
+
+.. math::
+   :label: eq_pressure_drop
+
+   \min_{z} \quad & \int_\Gamma\left( p_{in} - p_{out} \right) \\
+   \textrm{s.t.} \quad & m_f(\hat{z}) \leq m_{t} \\
+   \quad & z_{min}\leq z \leq z_{max}
+
+where :math:`p` is computed by solving the conservation equations :math:numref:`eq_incompressible_condition` 
+- :math:numref:`eq_momentum_conservation`. The :math:`m_f(\hat{z})` term is the mass of the fluid material 
+and :math:`m_t` is the target mass. 
+
+.. _examples_topt_fluids_pressdrop_inputdeck_subsec:
+
+Input Deck 
+**********
+
+The following excerpt shows the input deck used to solve the pressure drop minimization problem
+
+.. code-block:: console
+
+  begin service 1
+    code platomain
+    number_processors 1
+  end service
+
+  begin service 2
+    code plato_analyze
+    number_processors 1
+  end service
+
+  begin output
+    service 2
+    native_service_output false
+  end output
+
+  begin criterion 1
+    type composite
+    criterion_ids 2 3
+    criterion_weights 0.01 -0.01
+  end criterion
+
+  begin criterion 2
+    type mean_surface_pressure
+    location_name inlet
+  end criterion
+
+  begin criterion 3
+    type mean_surface_pressure
+    location_name outlet
+  end criterion
+
+  begin criterion 4
+    type volume
+  end criterion
+
+  begin scenario 1
+    physics steady_state_incompressible_fluids
+    dimensions 2
+    boundary_conditions 1 2 3 4 5
+    material 1
+    linear_solver_tolerance 1e-20
+    linear_solver_iterations 1000
+  end scenario
+
+  begin objective
+    scenarios 1
+    criteria 1
+    services 2
+    type weighted_sum
+    weights 1
+  end objective
+
+  begin constraint 1
+    criterion 4
+    relative_target 0.25
+    type less_than
+    service 1
+    scenario 1
+  end constraint
+
+  begin boundary_condition 1
+    type zero_value
+    location_type nodeset
+    location_name no_slip
+    degree_of_freedom velx
+  end boundary_condition
+
+  begin boundary_condition 2
+    type zero_value
+    location_type nodeset
+    location_name no_slip
+    degree_of_freedom vely
+  end boundary_condition
+
+  begin boundary_condition 3
+    type fixed_value
+    location_type nodeset
+    location_name inlet
+    degree_of_freedom velx
+    value 1.5
+  end boundary_condition
+
+  begin boundary_condition 4
+    type fixed_value
+    location_type nodeset
+    location_name inlet
+    degree_of_freedom vely
+    value 0
+  end boundary_condition
+
+  begin boundary_condition 5
+    type zero_value
+    location_type nodeset
+    location_name outlet
+    degree_of_freedom press
+  end boundary_condition
+
+  begin block 1
+    material 1
+    name block_1
+  end block
+
+  begin material 1
+    material_model laminar_flow
+    reynolds_number 100
+  end material
+
+  begin optimization_parameters
+    optimization_algorithm mma
+    discretization density
+    max_iterations 5
+    mma_move_limit 0.25
+    filter_radius_scale 1.75
+  end optimization_parameters
+
+  begin mesh
+    name pipe_flow.exo
+  end mesh
+
+.. _examples_topt_fluids_pressdrop_results_subsec:
+
+Results 
+*******
+
+.. _examples_topt_thermal_compliance_sec:
+
+Thermal Compliance Minimization
+###############################
+
+Thermal analyses are used to determine the temperature field and heat fluxes of a structure. Thermal 
+analyses are widely used in engineering practices such as aerospace vehicle design, electronics cooling 
+system design and automotive design. The governing equation for linear steady state thermal analysis 
+is given as
+
+.. math::
+  :label: eq_thermal_steady_state
+  
+Mathematically, a thermal compliance minimization problem is defined as:
