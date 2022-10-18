@@ -6,7 +6,7 @@
 Welcome to Morphorm's documentation!
 ====================================
 
-.. figure:: images/logo.png
+.. figure:: images/logo_plus_slogan.png
    :figwidth: 50
    :alt:   alternative text
    :align: center
@@ -15,9 +15,11 @@ Welcome to Morphorm's documentation!
 
    This is a pre-release version of the Morphorm documentation.
 
-These Github pages are meant to serve as the documentation for **Morphorm** and its associated repositories. These repositories can be found at the `Morphorm <https://github.com/morphorm22>`_ GitHub account.
+.. These Github pages are meant to serve as the documentation for **Morphorm** and its associated
+.. repositories. These repositories can be found at the `Morphorm <https://github.com/morphorm22>`_
+.. GitHub account.
 
-These pages are built using the `Morphorm Docs <https://github.com/morphorm22/morphdocs/>`_ GitHub repository.
+.. These pages are built using the `Morphorm Docs <https://github.com/morphorm22/morphdocs/>`_ GitHub repository.
 
 ************
 Introduction
